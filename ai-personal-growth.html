@@ -463,6 +463,17 @@
             this.style.height = Math.min(this.scrollHeight, 120) + 'px';
         });
 
+        // 模拟AI回复库
+        const mockResponses = [
+            "我理解你的感受。每个人都会在成长路上遇到迷茫，重要的是我们如何面对这些挑战。",
+            "感谢你愿意分享这些。这种反思本身就是一种勇气，让我们一起探索如何更好地前进。",
+            "我能感受到你的情绪。过去的经历虽然无法改变，但我们可以改变对它们的看法。",
+            "这是很常见的困扰。许多人都有类似的经历，你并不孤单。让我们一起找到解决的方法。",
+            "成长是一个过程，不必对自己太苛刻。每一个经历都是宝贵的学习机会。",
+            "有时候，我们需要停下来，好好倾听内心的声音。你现在做的很好。",
+            "后悔是人之常情，但它不应该成为束缚你的枷锁。让我们一起寻找突破的方向。"
+        ];
+
         // 发送消息
         async function sendMessage(message = null, isRegretChoice = false) {
             const messageText = message || chatInput.value.trim();
@@ -483,45 +494,46 @@
             setLoading(true);
             hideError();
 
-            try {
-                // 调用API
-                const response = await fetch(`${API_BASE_URL}/api/chat`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        ai_type: AI_TYPE,
-                        message: messageText,
-                        history: conversationHistory
-                    })
-                });
+            // 模拟网络延迟
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
-                const data = await response.json();
-
-                if (data.success) {
-                    // 添加AI回复到界面（包含后悔选择按钮）
-                    addMessageWithButtons(data.response, 'ai');
-                    
-                    // 更新对话历史
-                    conversationHistory.push(
-                        { role: 'user', content: messageText },
-                        { role: 'assistant', content: data.response }
-                    );
-                    
-                    // 限制历史记录长度（保留最近10轮）
-                    if (conversationHistory.length > 20) {
-                        conversationHistory = conversationHistory.slice(-20);
-                    }
+            // 生成模拟回复
+            let response;
+            if (isRegretChoice) {
+                response = messageText === '持续后悔中' 
+                    ? "我理解你的感受。后悔是一种正常的情绪，它说明你对自己的人生有所期待。让我们继续聊聊，看看如何把这些遗憾转化为成长的动力。"
+                    : "很高兴听到你开始接纳过去的自己。记住，每一个选择都塑造了今天的你，而今天的你正在创造更好的明天。";
+            } else {
+                // 根据用户输入关键词匹配回复
+                if (messageText.includes('梦想')) {
+                    response = "梦想是人生的指南针。虽然现在可能没有坚持当初的梦想，但这并不意味着你不能重新追寻。重要的是现在开始行动。";
+                } else if (messageText.includes('时间') || messageText.includes('浪费')) {
+                    response = "时间确实宝贵，但所谓的'浪费'也是一种经历。每一段经历都让你成为了现在的你。重要的是从现在开始，让每一刻都有意义。";
+                } else if (messageText.includes('机会') || messageText.includes('错过')) {
+                    response = "错过的机会确实让人遗憾，但人生还有很多机会等待着你。保持开放的心态，新的机会可能就在下一个转角。";
+                } else if (messageText.includes('改变') || messageText.includes('开始')) {
+                    response = "改变从来都不会太晚。重要的是迈出第一步。让我们一起制定一个可行的计划，一步步朝着目标前进。";
                 } else {
-                    showError(data.error || '请求失败，请稍后重试');
+                    // 随机选择通用回复
+                    response = mockResponses[Math.floor(Math.random() * mockResponses.length)];
                 }
-            } catch (error) {
-                showError('网络错误，请检查API服务器是否运行');
-                console.error('Error:', error);
-            } finally {
-                setLoading(false);
             }
+
+            // 添加AI回复到界面（包含后悔选择按钮）
+            addMessageWithButtons(response, 'ai');
+            
+            // 更新对话历史
+            conversationHistory.push(
+                { role: 'user', content: messageText },
+                { role: 'assistant', content: response }
+            );
+            
+            // 限制历史记录长度（保留最近10轮）
+            if (conversationHistory.length > 20) {
+                conversationHistory = conversationHistory.slice(-20);
+            }
+            
+            setLoading(false);
         }
 
         // 添加消息到界面（带进入选择界面按钮）
