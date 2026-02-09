@@ -85,6 +85,7 @@ def chat():
         
         # 返回生成的回复
         return jsonify({
+            "success": True,
             "response": response,
             "model": MODEL_CONFIG["name"],
             "knowledge_base": "100GB 开源知识"
