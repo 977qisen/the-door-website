@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开始体验 - THE DOOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+        
+        /* 当有卡片被选中时，确保容器不会裁剪fixed元素 */
+        body.card-selected .cards-container,
+        body.card-selected .cards-section {
+            overflow: visible;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-door {
+            width: 24px;
+            height: 32px;
+            position: relative;
+            margin-right: 8px;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-door::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            background-color: #fff;
+            transform: perspective(100px) rotateY(-15deg);
+        }
+
+        .logo-door::after {
+            content: '';
+            position: absolute;
+            top: 9px;
+            left: 12px;
+            width: 6px;
+            height: 20px;
+            background-color: #000;
+            clip-path: polygon(0 0, 100% 0, 70% 100%, 0 100%);
+            z-index: 1;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #000;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .back-link:hover {
+            color: #4a6fa5;
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+
+        /* 3D卡片容器 - 可拖拽滑动 */
+        .cards-section {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #e0e0e0 0%, #f0f0f0 50%, #e8e8e8 100%);
+        }
+
+        .cards-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: grab;
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+
+        .cards-container:active {
+            cursor: grabbing;
+        }
+
+        .cards-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 0 40px;
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out;
+            justify-content: center;
+            width: auto;
+        }
+        
+        /* 当wrapper暂停时，移除transform-style以允许fixed定位正常工作 */
+        .cards-wrapper.paused {
+            transform-style: flat;
+        }
+
+        .card {
+            position: relative;
+            width: 180px;
+            height: 260px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            transition: transform 0.4s ease;
+        }
+        
+        .card:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* 选中卡片的图片 */
+        .card.is-selected img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        /* 3D透视布局 - 卡片轻微旋转 */
+        .card:nth-child(1) {
+            transform: rotateY(20deg) translateZ(-30px);
+            --rotate: 20deg;
+        }
+
+        .card:nth-child(2) {
+            transform: rotateY(12deg) translateZ(-15px);
+            --rotate: 12deg;
+        }
+
+        .card:nth-child(3) {
+            transform: rotateY(5deg) translateZ(-5px);
+            --rotate: 5deg;
+        }
+
+        .card:nth-child(4) {
+            transform: rotateY(0deg) translateZ(0px);
+            --rotate: 0deg;
+        }
+
+        .card:nth-child(5) {
+            transform: rotateY(-5deg) translateZ(-5px);
+            --rotate: -5deg;
+        }
+
+        .card:nth-child(6) {
+            transform: rotateY(-12deg) translateZ(-15px);
+            --rotate: -12deg;
+        }
+
+        .card:nth-child(7) {
+            transform: rotateY(-20deg) translateZ(-30px);
+            --rotate: -20deg;
+        }
+
+        /* 卡片悬停效果 - 3D悬浮 */
+        .card:hover:not(.is-selected):not(.is-falling) {
+            transform: scale(1.15) translateZ(50px) rotateY(0deg) !important;
+            z-index: 100;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 卡片选中状态 - 放大居中 */
+        .card.is-selected {
+            position: fixed !important;
+            left: 50% !important;
+            top: 50% !important;
+            width: 400px !important;
+            height: 550px !important;
+            transform: translate(-50%, -50%) rotateY(0deg) scale(1) translateZ(0px) !important;
+            z-index: 9999 !important;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            margin: 0 !important;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5) !important;
+            border-radius: 16px;
+        }
+        
+        /* 卡片掉落动画 */
+        .card.is-falling {
+            animation: fallDown 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes fallDown {
+            0% {
+                transform: translateY(0) rotateY(var(--rotate, 0deg)) rotateX(0deg);
+                opacity: 1;
+            }
+            30% {
+                transform: translateY(-30px) rotateY(calc(var(--rotate, 0deg) * 1.5)) rotateX(10deg);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(120vh) rotateY(calc(var(--rotate, 0deg) * 2)) rotateX(45deg);
+                opacity: 0;
+            }
+        }
+
+        /* 卡片文字覆盖层 */
+        .card-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 25px 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .card:hover .card-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 选中卡片的文字 */
+        .card.is-selected .card-text {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            font-size: 1.6rem !important;
+            padding: 35px 20px !important;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+        }
+
+        /* 暂停状态 */
+        .cards-wrapper.paused .card {
+            animation-play-state: paused;
+        }
+
+        /* 滑动提示 */
+        .swipe-hint {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 0.9rem;
+            text-align: center;
+            z-index: 100;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .swipe-hint.hidden {
+            opacity: 0;
+        }
+
+        .swipe-icon {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: swipePulse 2s ease-in-out infinite;
+        }
+
+        .swipe-icon::before {
+            content: '↔';
+            font-size: 1.2rem;
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes swipePulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .card {
+                width: 140px;
+                height: 200px;
+            }
+
+            .card.is-selected {
+                width: 320px !important;
+                height: 440px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 120px;
+                height: 170px;
+            }
+
+            .card.is-selected {
+                width: 280px !important;
+                height: 380px !important;
+            }
+            
+            .cards-wrapper {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <div class="logo-door"></div>
+                <span>THE DOOR</span>
+            </div>
+            <a href="新网页.html" class="back-link">返回首页</a>
+        </div>
+    </header>
+
+    <!-- 3D卡片部分 -->
+    <section class="cards-section" id="cards-section">
+        <div class="cards-container">
+            <div class="cards-wrapper" id="cards-wrapper">
+                <div class="card" data-color="red" data-index="0">
+                    <img src="1.jpg" alt="个人成长">
+                    <span class="card-text">个人成长</span>
+                </div>
+                <div class="card" data-color="orange" data-index="1">
+                    <img src="2.jpg" alt="职业发展">
+                    <span class="card-text">职业发展</span>
+                </div>
+                <div class="card" data-color="yellow" data-index="2">
+                    <img src="3.jpg" alt="健康管理">
+                    <span class="card-text">健康管理</span>
+                </div>
+                <div class="card" data-color="green" data-index="3">
+                    <img src="4.jpg" alt="家庭关系">
+                    <span class="card-text">家庭关系</span>
+                </div>
+                <div class="card" data-color="blue" data-index="4">
+                    <img src="5.jpg" alt="社交与人际">
+                    <span class="card-text">社交与人际</span>
+                </div>
+                <div class="card" data-color="indigo" data-index="5">
+                    <img src="15.jpg" alt="财务规划">
+                    <span class="card-text">财务规划</span>
+                </div>
+                <div class="card" data-color="purple" data-index="6">
+                    <img src="14.jpg" alt="休闲娱乐">
+                    <span class="card-text">休闲娱乐</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 滑动提示 -->
+        <div class="swipe-hint" id="swipe-hint">
+            <div class="swipe-icon"></div>
+            <span>左右滑动浏览卡片</span>
+        </div>
+    </section>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const cardsWrapper = document.getElementById('cards-wrapper');
+            const cards = document.querySelectorAll('.card');
+            const cardsSection = document.getElementById('cards-section');
+            const swipeHint = document.getElementById('swipe-hint');
+            
+            let cardSelected = false;
+            
+            // 卡片点击交互 - 点击后其他卡片掉落，选中卡片放大
+            cards.forEach((card, index) => {
+                card.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    if (cardSelected) return;
+                    cardSelected = true;
+                    
+                    const clickedIndex = parseInt(card.getAttribute('data-index'));
+                    
+                    // 隐藏滑动提示
+                    swipeHint.classList.add('hidden');
+                    
+                    // 暂停所有卡片动画
+                    cardsWrapper.classList.add('paused');
+                    
+                    // 给body添加类，用于全局样式控制
+                    document.body.classList.add('card-selected');
+                    
+                    // 先添加选中类（立即执行）
+                    card.classList.add('is-selected');
+                    
+                    // 其他卡片掉落（延迟一点，让选中卡片先显示）
+                    cards.forEach((otherCard, otherIndex) => {
+                        if (otherIndex !== clickedIndex) {
+                            setTimeout(() => {
+                                otherCard.classList.add('is-falling');
+                            }, otherIndex * 60);
+                        }
+                    });
+                    
+                    // 保存选择的信息
+                    const selectedColor = card.getAttribute('data-color');
+                    const selectedText = card.querySelector('.card-text').textContent;
+                    const selectedIndex = parseInt(card.getAttribute('data-index'));
+                    sessionStorage.setItem('selectedColor', selectedColor);
+                    sessionStorage.setItem('selectedCategory', selectedText);
+                    sessionStorage.setItem('selectedIndex', selectedIndex);
+                    
+                    // 延迟后跳转到对应的三级页面
+                    setTimeout(() => {
+                        const pageNames = [
+                            'ai-personal-growth.html',    // 个人成长
+                            'ai-career.html',             // 职业发展
+                            'ai-health.html',             // 健康管理
+                            'ai-family.html',             // 家庭关系
+                            'ai-social.html',             // 社交与人际
+                            'ai-finance.html',            // 财务规划
+                            'ai-leisure.html'             // 休闲娱乐
+                        ];
+                        window.location.href = pageNames[selectedIndex];
+                    }, 800);
+                });
+            });
+            
+            // 拖拽滑动功能
+            let isDragging = false;
+            let startX = 0;
+            let currentX = 0;
+            let translateX = 0;
+            let velocity = 0;
+            let lastX = 0;
+            let lastTime = 0;
+
+            const container = document.querySelector('.cards-container');
+            const wrapper = document.querySelector('.cards-wrapper');
+            
+            // 计算最大滑动范围
+            const cardWidth = 180;
+            const gap = 30;
+            const viewportWidth = window.innerWidth;
+            const totalCardsWidth = cards.length * cardWidth + (cards.length - 1) * gap;
+            
+            // 计算滑动范围 - 让卡片可以左右滑动，中间卡片居中
+            const centerOffset = (viewportWidth - cardWidth) / 2;
+            const maxTranslate = centerOffset;
+            const minTranslate = -(totalCardsWidth - viewportWidth + centerOffset);
+            
+            // 初始位置：让中间卡片(第4张)居中
+            const middleIndex = Math.floor(cards.length / 2);
+            const initialOffset = centerOffset - (middleIndex * (cardWidth + gap));
+            translateX = initialOffset;
+            wrapper.style.transform = `translateX(${translateX}px)`;
+            
+            // 鼠标/触摸按下
+            container.addEventListener('mousedown', startDrag);
+            container.addEventListener('touchstart', startDrag, { passive: true });
+            
+            // 鼠标/触摸移动
+            window.addEventListener('mousemove', drag);
+            window.addEventListener('touchmove', drag, { passive: true });
+            
+            // 鼠标/触摸释放
+            window.addEventListener('mouseup', endDrag);
+            window.addEventListener('touchend', endDrag);
+            
+            function startDrag(e) {
+                if (cardSelected) return;
+                isDragging = true;
+                startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+                lastX = startX;
+                lastTime = Date.now();
+                velocity = 0;
+                wrapper.style.transition = 'none';
+                
+                // 隐藏提示
+                swipeHint.classList.add('hidden');
+            }
+            
+            function drag(e) {
+                if (!isDragging || cardSelected) return;
+                
+                const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+                const deltaX = x - startX;
+                currentX = translateX + deltaX;
+                
+                // 计算速度
+                const now = Date.now();
+                const dt = now - lastTime;
+                if (dt > 0) {
+                    velocity = (x - lastX) / dt;
+                }
+                lastX = x;
+                lastTime = now;
+                
+                // 限制滑动范围（带弹性效果）
+                if (currentX > maxTranslate) {
+                    currentX = maxTranslate + (currentX - maxTranslate) * 0.3;
+                }
+                if (currentX < minTranslate) {
+                    currentX = minTranslate + (currentX - minTranslate) * 0.3;
+                }
+                
+                wrapper.style.transform = `translateX(${currentX}px)`;
+            }
+            
+            function endDrag() {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                // 惯性滑动
+                const momentum = velocity * 200;               let targetX = currentX + momentum;
+                
+                // 限制范围
+                if (targetX > maxTranslate) targetX = maxTranslate;
+                if (targetX < minTranslate) targetX = minTranslate;
+                
+                translateX = targetX;
+                wrapper.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                wrapper.style.transform = `translateX(${translateX}px)`;
+            }
+            
+            // 鼠标滚轮横向滑动
+            container.addEventListener('wheel', (e) => {
+                if (cardSelected) return;
+                e.preventDefault();
+                
+                translateX -= e.deltaY * 0.8;
+                
+                // 限制范围
+                if (translateX > maxTranslate) translateX = maxTranslate;
+                if (translateX < minTranslate) translateX = minTranslate;
+                
+                wrapper.style.transition = 'transform 0.3s ease';
+                wrapper.style.transform = `translateX(${translateX}px)`;
+                
+                // 隐藏提示
+                swipeHint.classList.add('hidden');
+            }, { passive: false });
+            
+            // 键盘左右键控制
+            document.addEventListener('keydown', (e) => {
+                if (cardSelected) return;
+                
+                const step = cardWidth + gap;
+                if (e.key === 'ArrowLeft') {
+                    translateX = Math.min(translateX + step, maxTranslate);
+                    wrapper.style.transition = 'transform 0.4s ease';
+                    wrapper.style.transform = `translateX(${translateX}px)`;
+                    swipeHint.classList.add('hidden');
+                } else if (e.key === 'ArrowRight') {
+                    translateX = Math.max(translateX - step, minTranslate);
+                    wrapper.style.transition = 'transform 0.4s ease';
+                    wrapper.style.transform = `translateX(${translateX}px)`;
+                    swipeHint.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

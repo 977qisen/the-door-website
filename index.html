@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE DOOR - 探索另一种人生可能</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-door {
+            width: 32px;
+            height: 44px;
+            position: relative;
+            margin-right: 10px;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-door::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            background-color: #fff;
+            transform: perspective(100px) rotateY(-15deg);
+        }
+
+        .logo-door::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 16px;
+            width: 10px;
+            height: 28px;
+            background-color: #000;
+            clip-path: polygon(0 0, 100% 0, 70% 100%, 0 100%);
+            z-index: 1;
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links li {
+            margin-left: 2rem;
+        }
+
+        .navbar-link {
+            text-decoration: none;
+            color: #000;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            display: inline-block;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .navbar-link:hover {
+            color: #4a6fa5;
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+
+        .navbar-link:active {
+            transform: translateY(1px);
+        }
+
+        /* 初始首页 */
+        .initial-home {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #6b7280;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 1s ease-out;
+        }
+
+        .initial-content {
+            text-align: center;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 显现文字效果 */
+        .reveal-text {
+            font-size: 75vh;
+            font-weight: 300;
+            color: #fff;
+            font-family: 'Bahnschrift Light Condensed', 'Bahnschrift', 'Arial Narrow', sans-serif;
+            position: relative;
+            display: flex;
+            gap: 0;
+            perspective: 1000px;
+            letter-spacing: -0.2em;
+            line-height: 1;
+            white-space: nowrap;
+            transform: scaleX(0.7) scaleY(1.25) translateX(-3%);
+            overflow: visible;
+            width: 100vw;
+            justify-content: center;
+        }
+
+        .char {
+            display: inline-block;
+            opacity: 0;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .char::before {
+            content: attr(data-char);
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: transparent;
+            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.3);
+            transform: translateZ(-20px);
+            opacity: 0;
+        }
+
+        .char.space {
+            width: 0.15em;
+        }
+
+        /* 液态流动背景 */
+        .liquid-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse at center, 
+                rgba(255, 255, 255, 0.8) 0%,
+                rgba(255, 255, 255, 0.4) 30%,
+                rgba(255, 255, 255, 0.1) 60%,
+                transparent 100%);
+            filter: blur(40px);
+            opacity: 0;
+            animation: liquidFlow 3s ease-in-out infinite;
+        }
+
+        @keyframes liquidFlow {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            }
+            25% {
+                transform: translate(-50%, -50%) scale(1.1) rotate(5deg);
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
+                border-radius: 50% 60% 30% 60% / 30% 40% 70% 60%;
+            }
+            75% {
+                transform: translate(-50%, -50%) scale(1.1) rotate(-5deg);
+                border-radius: 60% 40% 60% 30% / 70% 30% 50% 60%;
+            }
+        }
+
+        /* 逐字3D翻转显现 */
+        @keyframes charReveal {
+            0% {
+                opacity: 0;
+                transform: rotateY(-90deg) rotateX(45deg) translateZ(-100px) scale(0.5);
+                filter: blur(20px);
+            }
+            30% {
+                opacity: 1;
+                transform: rotateY(0deg) rotateX(0deg) translateZ(0) scale(1);
+                filter: blur(0px);
+            }
+            70% {
+                opacity: 1;
+                transform: rotateY(0deg) rotateX(0deg) translateZ(0) scale(1);
+                text-shadow:
+                    0 0 20px rgba(255, 255, 255, 0.9),
+                    0 0 40px rgba(255, 255, 255, 0.8),
+                    0 0 60px rgba(255, 255, 255, 0.7);
+            }
+            100% {
+                opacity: 0;
+                transform: rotateY(90deg) rotateX(-45deg) translateZ(100px) scale(1.5);
+                filter: blur(30px);
+                text-shadow:
+                    0 0 60px rgba(255, 255, 255, 1),
+                    0 0 120px rgba(255, 255, 255, 0.9),
+                    0 0 180px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        /* 粒子效果 */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(var(--tx), var(--ty)) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(calc(var(--tx) * 3), calc(var(--ty) * 3)) scale(0);
+            }
+        }
+
+        /* 波纹扩散效果 */
+        .ripple {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes rippleExpand {
+            0% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(8);
+            }
+        }
+
+        /* 页面转场动画 */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+                filter: blur(50px);
+            }
+        }
+
+        /* 页面转场动画 */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+                background-color: rgba(0, 0, 0, 1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+                background-color: rgba(255, 255, 255, 0.5);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.2);
+                background-color: rgba(255, 255, 255, 0.9);
+            }
+        }
+
+        /* 英雄区域 */
+        .hero {
+            min-height: 80vh;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            width: 100%;
+        }
+
+        .hero-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hero-text {
+            flex: 0 0 320px;
+            padding: 0;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3.8rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+            color: #000;
+            width: 100%;
+            margin-top: 0;
+            white-space: pre-line;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #666;
+            max-width: 600px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: #000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .hero-visuals {
+            flex: 1;
+            position: relative;
+            height: 500px;
+        }
+
+        .card {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+        /* 卡片点击弹窗 */
+        .card-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .card-modal.closing {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .card-modal-content {
+            background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 500px;
+            text-align: center;
+            transform: scale(0.8) rotateY(-15deg);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-modal-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            transform: translateX(-100%);
+            transition: transform 0.8s ease;
+        }
+
+        .card-modal.active .card-modal-content {
+            transform: scale(1) rotateY(0deg);
+            opacity: 1;
+        }
+
+        .card-modal.active .card-modal-content::before {
+            transform: translateX(100%);
+        }
+
+        /* ========== 高级沙漏消散特效 ========== */
+        .card-modal-content.dissolve-hourglass {
+            animation: hourglassOut 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes hourglassOut {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                filter: blur(0);
+            }
+            10% {
+                transform: scale(0.99);
+                opacity: 0.98;
+            }
+            25% {
+                transform: scale(0.95) scaleY(0.9);
+                opacity: 0.9;
+                filter: blur(1px);
+            }
+            40% {
+                transform: scale(0.85) scaleY(0.6);
+                opacity: 0.75;
+                filter: blur(2px);
+            }
+            55% {
+                transform: scale(0.6) scaleY(0.3);
+                opacity: 0.5;
+                filter: blur(4px);
+            }
+            70% {
+                transform: scale(0.35) scaleY(0.12);
+                opacity: 0.25;
+                filter: blur(8px);
+            }
+            85% {
+                transform: scale(0.15) scaleY(0.04);
+                opacity: 0.08;
+                filter: blur(15px);
+            }
+            100% {
+                transform: scale(0) scaleY(0);
+                opacity: 0;
+                filter: blur(25px);
+            }
+        }
+
+        /* 沙漏遮罩效果 */
+        .hourglass-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                transparent 35%,
+                rgba(0, 0, 0, 0.1) 45%,
+                rgba(0, 0, 0, 0.2) 50%,
+                rgba(0, 0, 0, 0.1) 55%,
+                transparent 65%,
+                transparent 100%
+            );
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .card-modal-content.dissolve-hourglass .hourglass-mask {
+            opacity: 1;
+        }
+
+        /* ========== 高级沙漏粒子效果 ========== */
+        .dissolve-particle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        /* 沙粒样式 */
+        .sand-particle {
+            width: 3px;
+            height: 3px;
+            background: linear-gradient(135deg, #d4a574 0%, #c4956a 50%, #b0855a 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 2px rgba(212, 165, 116, 0.6),
+                0 0 4px rgba(212, 165, 116, 0.3);
+        }
+
+        /* 大沙粒 */
+        .sand-particle-large {
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(135deg, #c9a86c 0%, #b89860 50%, #a88850 100%);
+            border-radius: 45%;
+        }
+
+        /* 沙粒下落动画 */
+        @keyframes sandFall {
+            0% {
+                opacity: 0;
+                transform: translateY(0) translateX(0) scale(0.5);
+            }
+            5% {
+                opacity: 1;
+                transform: translateY(10px) translateX(var(--drift)) scale(1);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(80px) translateX(calc(var(--drift) * 1.5)) scale(0.9);
+            }
+            60% {
+                opacity: 0.8;
+                transform: translateY(160px) translateX(calc(var(--drift) * 2)) scale(0.7);
+            }
+            85% {
+                opacity: 0.3;
+                transform: translateY(220px) translateX(calc(var(--drift) * 2.5)) scale(0.4);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(280px) translateX(calc(var(--drift) * 3)) scale(0);
+            }
+        }
+
+        /* 沙粒堆积动画 */
+        @keyframes sandPile {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0.6;
+                transform: translateY(5px) scale(0.8);
+            }
+        }
+
+        /* 沙流效果 */
+        .sand-stream {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, 
+                rgba(212, 165, 116, 0.8) 0%,
+                rgba(196, 149, 106, 0.6) 50%,
+                rgba(176, 133, 90, 0.2) 100%
+            );
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes sandStream {
+            0% {
+                opacity: 0;
+                height: 0;
+                transform: translateY(0);
+            }
+            10% {
+                opacity: 0.9;
+                height: 60px;
+            }
+            50% {
+                opacity: 0.7;
+                height: 120px;
+            }
+            90% {
+                opacity: 0.2;
+                height: 80px;
+            }
+            100% {
+                opacity: 0;
+                height: 0;
+                transform: translateY(200px);
+            }
+        }
+
+        /* 底部沙堆 */
+        .sand-pile-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 60px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes pileGrow {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) scaleY(0);
+            }
+            30% {
+                opacity: 0.8;
+                transform: translateX(-50%) scaleY(0.3);
+            }
+            70% {
+                opacity: 1;
+                transform: translateX(-50%) scaleY(0.8);
+            }
+            100% {
+                opacity: 0.9;
+                transform: translateX(-50%) scaleY(1);
+            }
+        }
+
+        .card-modal-text {
+            font-size: 1.3rem;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .card-modal-close {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .card-modal-close:hover {
+            background-color: #555;
+        }
+
+        .card-1 {
+            width: 240px;
+            height: 320px;
+            background-image: url('2c708564890de4bb2292696c8bff1fa6.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            top: 20px;
+            left: 50%;
+            margin-left: -220px;
+            transform: rotate(-20deg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .card-2 {
+            width: 240px;
+            height: 320px;
+            background-image: url('60428194451d21a24a76f717308070ad.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            top: 60px;
+            left: 50%;
+            margin-left: -140px;
+            transform: rotate(-5deg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+        .card-3 {
+            width: 240px;
+            height: 320px;
+            background-image: url('0666751099cc9cee65b34373a8c1633b.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            top: 100px;
+            left: 50%;
+            margin-left: -60px;
+            transform: rotate(10deg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 3;
+        }
+
+        .card-4 {
+            width: 240px;
+            height: 320px;
+            background-image: url('7270b17bc9d9868015d9a84089f943fd.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            top: 140px;
+            left: 50%;
+            margin-left: 20px;
+            transform: rotate(25deg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 4;
+        }
+
+        /* 理念部分 */
+        .concept {
+            padding: 8rem 0;
+            background-color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .concept {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .concept-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('8.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        .concept-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                to right,
+                rgba(240, 240, 240, 1) 0%,
+                rgba(240, 240, 240, 0.9) 10%,
+                rgba(240, 240, 240, 0) 25%,
+                rgba(240, 240, 240, 0) 75%,
+                rgba(240, 240, 240, 0.9) 90%,
+                rgba(240, 240, 240, 1) 100%
+            );
+        }
+
+        .concept-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 25%;
+            height: 100%;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            mask-image: linear-gradient(to right, black 0%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 0%, transparent 100%);
+        }
+
+        .concept-bg-blur-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 25%;
+            height: 100%;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            mask-image: linear-gradient(to left, black 0%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to left, black 0%, transparent 100%);
+            z-index: 1;
+        }
+
+        .concept-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.5rem 2.5rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .concept .section-title {
+            position: relative;
+            z-index: 1;
+            color: #fff;
+            text-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.8),
+                0 4px 20px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+        }
+
+        .concept-content p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            color: #fff;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+            text-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.9),
+                0 4px 12px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(0, 0, 0, 0.4);
+            font-weight: 500;
+        }
+
+        .concept-content .long-line {
+            max-width: 100%;
+            font-weight: 600;
+        }
+
+        .concept-content .short-line {
+            max-width: 70%;
+            margin-left: auto;
+            margin-right: auto;
+            color: #fff;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        /* 研究部分 */
+        .research {
+            padding: 6rem 0;
+            background-color: #f5f7fa;
+        }
+
+        .research-grid {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 2rem;
+        }
+
+        .research-card {
+            background-color: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 1;
+            max-width: 360px;
+            min-width: 280px;
+            border: 1px solid rgba(0,0,0,0.04);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .research-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #333 0%, #666 100%);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .research-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        }
+
+        .research-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .research-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            color: #222;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .research-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #555;
+        }
+
+        @media (max-width: 992px) {
+            .research-grid {
+                flex-wrap: wrap;
+            }
+            .research-card {
+                min-width: 300px;
+                max-width: 100%;
+            }
+        }
+
+        /* 服务功能部分 */
+        .features {
+            padding: 6rem 0;
+            background-color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .features-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('9.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        .features-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 1) 0%,
+                rgba(255, 255, 255, 0.95) 10%,
+                rgba(255, 255, 255, 0) 25%,
+                rgba(255, 255, 255, 0) 75%,
+                rgba(255, 255, 255, 0.95) 90%,
+                rgba(255, 255, 255, 1) 100%
+            );
+        }
+
+        .features-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 25%;
+            height: 100%;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            mask-image: linear-gradient(to right, black 0%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 0%, transparent 100%);
+        }
+
+        .features-bg-blur-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 25%;
+            height: 100%;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            mask-image: linear-gradient(to left, black 0%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to left, black 0%, transparent 100%);
+            z-index: 1;
+        }
+
+        .features .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.92);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            background-color: rgba(255, 255, 255, 0.98);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #222;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        /* 流程部分 */
+        .process {
+            padding: 8rem 0;
+            background-color: #f5f7fa;
+        }
+
+        .process-steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            max-width: 200px;
+            margin: 1rem;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background-color: #000;
+            color: #fff;
+            border-radius: 50%;
+            line-height: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .step p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* 联系部分 */
+        .contact {
+            padding: 6rem 0;
+            background-color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('10.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        .contact .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #fff;
+            text-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.8),
+                0 4px 12px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .contact p {
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #fff;
+            text-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.8),
+                0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .contact-btn {
+            display: block;
+            width: 200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            background-color: #000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 页脚 */
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 4rem 0;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-logo .logo-door {
+            width: 24px;
+            height: 32px;
+            margin-right: 8px;
+        }
+
+        .footer-logo .logo-door::before {
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+        }
+
+        .footer-logo .logo-door::after {
+            top: 9px;
+            left: 12px;
+            width: 6px;
+            height: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-left: 2rem;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: #fff;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #4a6fa5;
+        }
+
+        /* Cookie提示 */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .cookie-banner p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .cookie-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .cookie-btn.accept {
+            background-color: #4a6fa5;
+            color: #fff;
+        }
+
+        .cookie-btn.decline {
+            background-color: transparent;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+
+        .cookie-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-visuals {
+                margin-top: 4rem;
+            }
+
+            .navbar-links li {
+                margin-left: 1.5rem;
+            }
+
+            .reveal-text {
+                font-size: 70vh;
+                transform: scaleX(0.65) scaleY(1.2) translateX(-3%);
+                letter-spacing: -0.18em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .reveal-text {
+                font-size: 65vh;
+                transform: scaleX(0.6) scaleY(1.15) translateX(-3%);
+                letter-spacing: -0.15em;
+            }
+
+            .process-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .step {
+                max-width: 300px;
+                text-align: center;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                margin-top: 2rem;
+            }
+
+            .footer-links li {
+                margin: 0 1rem;
+            }
+
+            .reveal-text {
+                font-size: 60vh;
+                transform: scaleX(0.55) scaleY(1.1) translateX(-3%);
+                letter-spacing: -0.12em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .card {
+                width: 200px;
+                height: 280px;
+            }
+
+            .reveal-text {
+                font-size: 12vh;
+            }
+        }
+
+        /* 创意拼贴元素 - 有机散布布局 */
+        .collage-element {
+            position: absolute;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.9;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            mix-blend-mode: multiply;
+        }
+
+        .collage-element img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.15));
+        }
+
+        /* 相机眼睛 - 放在"其实你现在挺好"文字右下方红色方框位置 */
+        .collage-camera {
+            width: 850px;
+            bottom: 0;
+            left: 6%;
+            transform: rotate(0deg);
+            z-index: 3;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 1200px) {
+            .collage-camera { width: 600px; }
+        }
+
+        @media (max-width: 768px) {
+            .collage-element {
+                opacity: 0.7;
+            }
+            .collage-camera { 
+                width: 400px; 
+                bottom: 0;
+                left: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <div class="logo-door"></div>
+                <span>THE DOOR</span>
+            </div>
+            <nav class="navbar-nav">
+                <ul class="navbar-links">
+                    <li><a href="#concept" class="navbar-link">理念</a></li>
+                    <li><a href="#research" class="navbar-link">研究</a></li>
+                    <li><a href="#features" class="navbar-link">功能</a></li>
+                    <li><a href="#process" class="navbar-link">流程</a></li>
+                    <li><a href="#contact" class="navbar-link">联系</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 初始首页 -->
+    <div class="initial-home" id="initial-home">
+        <div class="liquid-bg" id="liquid-bg"></div>
+        <div class="initial-content">
+            <div class="reveal-text" id="reveal-text">
+                <span class="char" data-char="T">T</span>
+                <span class="char" data-char="H">H</span>
+                <span class="char" data-char="E">E</span>
+                <span class="char space"></span>
+                <span class="char" data-char="D">D</span>
+                <span class="char" data-char="O">O</span>
+                <span class="char" data-char="O">O</span>
+                <span class="char" data-char="R">R</span>
+            </div>
+        </div>
+        <div class="ripple-container" id="ripple-container"></div>
+    </div>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>其实你现在<br>挺好</h1>
+
+                    <a href="experience.html" class="btn">开始体验</a>
+                </div>
+                <div class="hero-visuals">
+                    <div class="card card-1"></div>
+                    <div class="card card-2"></div>
+                    <div class="card card-3"></div>
+                    <div class="card card-4"></div>
+                </div>
+            </div>
+        </div>
+        <!-- 相机眼睛拼贴元素 -->
+        <div class="collage-element collage-camera">
+            <img src="17.png" alt="Camera Eye">
+        </div>
+    </section>
+
+    <!-- 理念部分 -->
+    <section id="concept" class="concept">
+        <div class="concept-bg"></div>
+        <div class="concept-bg-blur-right"></div>
+        <div class="container">
+            <h2 class="section-title">我们的理念</h2>
+            <div class="concept-content">
+                <p class="long-line">"后悔"源于将现状与想象中"本可能更好"的替代选项比较。</p>
+                <p class="short-line">研究发现，即使最初是最佳选择，经历后悔后，人们也倾向于"非适应性选择转换"，做出非最优决定。</p>
+                <p class="long-line">我们的AI模拟人生服务基于实证研究，解释了"为何会美化未选之路"以及"这种情绪如何可能导致更差选择"，</p>
+                <p class="short-line">为您提供"体验另一条路会改变认知"的心理学基础。</p>
+                <p class="long-line">通过模拟不同选择的人生轨迹，我们帮助您更全面地理解每个决定的潜在后果，</p>
+                <p class="short-line">从而减少后悔情绪的负面影响，做出更符合您长期利益的选择。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 研究部分 -->
+    <section id="research" class="research">
+        <div class="container">
+            <h2 class="section-title">研究发现</h2>
+            <div class="research-grid">
+                <div class="research-card">
+                    <h3>非适应性选择转换</h3>
+                    <p>研究表明，即使最初做出的是最佳选择，经历后悔情绪后，人们往往会倾向于转换到其他选择，即使这些选择并非最优。这种行为被称为"非适应性选择转换"，可能导致更差的决策结果。</p>
+                </div>
+                <div class="research-card">
+                    <h3>美化未选之路</h3>
+                    <p>心理学研究解释了为何人们会美化未选择的道路。当我们反思过去的决定时，大脑会倾向于忽略未选道路的潜在缺点，只关注其积极方面，从而产生"如果当时选择了另一条路会更好"的错觉。</p>
+                </div>
+                <div class="research-card">
+                    <h3>体验改变认知</h3>
+                    <p>实证研究发现，当人们能够"体验"未选择的道路时，他们对该选择的认知会更加客观。这种体验可以帮助人们理解未选道路的真实优缺点，从而减少对其的美化，做出更理性的判断。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服务功能部分 -->
+    <section id="features" class="features">
+        <div class="features-bg"></div>
+        <div class="features-bg-blur-right"></div>
+        <div class="container">
+            <h2 class="section-title">服务功能</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>人生轨迹模拟</h3>
+                    <p>基于您的个人情况和选择，AI将模拟不同决策路径下的人生轨迹，包括职业发展、人际关系、财务状况等多个方面的变化。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>后悔情绪分析</h3>
+                    <p>通过分析您的决策过程和情绪反应，AI将帮助您识别可能导致后悔的思维模式，并提供针对性的建议，帮助您更好地管理这种情绪。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>决策优化建议</h3>
+                    <p>基于心理学研究和您的个人情况，AI将为您提供决策优化建议，帮助您在面对重要选择时，考虑更全面的因素，做出更符合您长期利益的决定。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>认知偏差纠正</h3>
+                    <p>AI将帮助您识别和纠正可能影响决策的认知偏差，如"美化未选之路"的倾向，从而使您能够更客观地评估不同选择的优缺点。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>长期影响预测</h3>
+                    <p>通过模拟不同选择的长期影响，AI将帮助您理解每个决定可能带来的长远后果，使您能够以更长远的视角看待当前的选择。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>个性化学习路径</h3>
+                    <p>基于您的决策风格和学习需求，AI将为您提供个性化的学习路径，帮助您提升决策能力，减少后悔情绪的负面影响。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 流程部分 -->
+    <section id="process" class="process">
+        <div class="container">
+            <h2 class="section-title">使用流程</h2>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>个人信息填写</h3>
+                    <p>填写您的基本信息和当前情况，帮助AI了解您的背景。</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>选择场景设定</h3>
+                    <p>选择您想要模拟的人生场景，如职业选择、教育路径等。</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>AI模拟分析</h3>
+                    <p>AI将根据您的信息，模拟不同选择的人生轨迹和可能的结果。</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>结果解读建议</h3>
+                    <p>查看AI的分析结果和建议，了解不同选择的优缺点和可能的影响。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系部分 -->
+    <section id="contact" class="contact">
+        <div class="contact-bg"></div>
+        <div class="container">
+            <h2 class="section-title">联系我们</h2>
+            <p>如果您对我们的服务有任何疑问或建议，欢迎随时联系我们。</p>
+            <a href="javascript:void(0);" class="contact-btn" id="learn-more-btn">了解更多</a>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="logo-door"></div>
+                <span>THE DOOR</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#concept">理念</a></li>
+                <li><a href="#research">研究</a></li>
+                <li><a href="#features">功能</a></li>
+                <li><a href="#process">流程</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- 卡片点击弹窗 -->
+    <div class="card-modal" id="card-modal">
+        <div class="card-modal-content">
+            <p class="card-modal-text" id="card-modal-text"></p>
+            <button class="card-modal-close" id="card-modal-close">关闭</button>
+        </div>
+    </div>
+
+    <!-- Cookie提示 -->
+    <div class="cookie-banner">
+        <p>By clicking "Accept", you agree to the storing of cookies on your device to enhance site navigation, analyze site usage, and assist in our marketing efforts. View our Privacy Policy for more information.</p>
+        <div class="cookie-buttons">
+            <button class="cookie-btn accept">ACCEPT</button>
+            <button class="cookie-btn decline">DECLINE</button>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取初始首页和显现文字
+            const initialHome = document.getElementById('initial-home');
+            const revealText = document.getElementById('reveal-text');
+            const liquidBg = document.getElementById('liquid-bg');
+            const rippleContainer = document.getElementById('ripple-container');
+            const chars = document.querySelectorAll('.char');
+
+            // 创建粒子效果
+            function createParticles() {
+                const particleCount = 30;
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    const angle = (Math.PI * 2 * i) / particleCount;
+                    const distance = 100 + Math.random() * 150;
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
+                    particle.style.setProperty('--tx', tx + 'px');
+                    particle.style.setProperty('--ty', ty + 'px');
+                    particle.style.left = '50%';
+                    particle.style.top = '50%';
+                    particle.style.animation = `particleFloat 2s ease-out ${i * 0.05}s forwards`;
+                    revealText.appendChild(particle);
+                }
+            }
+
+            // 创建波纹效果
+            function createRipples() {
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const ripple = document.createElement('div');
+                        ripple.className = 'ripple';
+                        ripple.style.animation = 'rippleExpand 1.5s ease-out forwards';
+                        rippleContainer.appendChild(ripple);
+                        setTimeout(() => ripple.remove(), 1500);
+                    }, i * 400);
+                }
+            }
+
+            // 启动液态背景
+            setTimeout(() => {
+                liquidBg.style.opacity = '1';
+            }, 200);
+
+            // 逐字动画
+            setTimeout(() => {
+                chars.forEach((char, index) => {
+                    setTimeout(() => {
+                        char.style.animation = 'charReveal 2.5s ease-in-out forwards';
+                    }, index * 200);
+                });
+            }, 500);
+
+            // 创建粒子效果
+            setTimeout(() => {
+                createParticles();
+            }, 800);
+
+            // 创建波纹效果
+            setTimeout(() => {
+                createRipples();
+            }, 1500);
+
+            // 文字动画完成后，启动页面转场效果并切换到主页面
+            setTimeout(function() {
+                // 启动页面转场动画
+                initialHome.style.animation = 'fadeOut 1.2s ease-out forwards';
+                setTimeout(function() {
+                    initialHome.style.display = 'none';
+                }, 1200);
+            }, 3500);
+
+            // 为导航链接添加点击事件
+            const navLinks = document.querySelectorAll('.navbar-link, .footer-links a');
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // 卡片点击弹窗功能
+            const cards = document.querySelectorAll('.card');
+            const cardModal = document.getElementById('card-modal');
+            const cardModalText = document.getElementById('card-modal-text');
+            const cardModalClose = document.getElementById('card-modal-close');
+
+            // 每张卡片对应的煽情话语
+            const cardMessages = {
+                'card-1': '每一层楼都藏着不同的故事，就像我们的人生，每个选择都通向不一样的风景。那些看似孤立的空间，其实都在诉说着同一个关于存在的秘密。',
+                'card-2': '锦鲤游过的地方，愿望就会生根发芽。愿你心中的那条河，永远有光，有色彩，有逆流而上的勇气，和顺流而下的坦然。',
+                'card-3': '走过千山万水，才发现最美的风景不在远方，而在回望时那一抹云深处的故乡。金色的梦，青绿的记忆，都是岁月给我们的温柔馈赠。',
+                'card-4': '我们都是被生活堆叠起来的个体，层层叠叠，互相支撑。那些看似拥挤的相遇，其实是命运最精心的安排，让我们在彼此的世界里，找到存在的意义。'
+            };
+
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const cardClass = this.classList[1]; // 获取 card-1, card-2 等类名
+                    currentCardType = cardClass; // 记录当前卡片类型
+                    const message = cardMessages[cardClass];
+                    if (message && cardModal && cardModalText) {
+                        cardModalText.textContent = message;
+                        cardModal.classList.add('active');
+                    }
+                });
+            });
+
+            // 当前打开的卡片类型
+            let currentCardType = '';
+
+            // 创建高级沙漏粒子效果 - 模拟真实沙子掉落
+            function createHourglassParticles(element) {
+                const rect = element.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const neckY = rect.height * 0.45; // 沙漏颈部位置
+                
+                // 1. 创建沙流效果（从颈部流下的沙线）
+                const streamCount = 3;
+                for (let i = 0; i < streamCount; i++) {
+                    const stream = document.createElement('div');
+                    stream.className = 'sand-stream';
+                    stream.style.left = (centerX + (i - 1) * 2) + 'px';
+                    stream.style.top = neckY + 'px';
+                    stream.style.animation = `sandStream 1.5s ease-in ${i * 0.1}s forwards`;
+                    element.appendChild(stream);
+                    setTimeout(() => stream.remove(), 2000);
+                }
+                
+                // 2. 创建下落的沙粒（从内容区域转化而来）
+                const fallingSandCount = 60;
+                for (let i = 0; i < fallingSandCount; i++) {
+                    const particle = document.createElement('div');
+                    const isLarge = Math.random() > 0.7;
+                    particle.className = isLarge ? 'dissolve-particle sand-particle-large' : 'dissolve-particle sand-particle';
+                    
+                    // 沙粒从内容的上半部分开始
+                    const startX = (Math.random() - 0.5) * rect.width * 0.8 + centerX;
+                    const startY = Math.random() * neckY * 0.8;
+                    
+                    // 计算向中心漂移的量
+                    const drift = (Math.random() - 0.5) * 30;
+                    
+                    particle.style.left = startX + 'px';
+                    particle.style.top = startY + 'px';
+                    particle.style.setProperty('--drift', drift + 'px');
+                    
+                    // 随机延迟，模拟沙子陆续掉落
+                    const delay = Math.random() * 0.8;
+                    const duration = 1.2 + Math.random() * 0.6;
+                    particle.style.animation = `sandFall ${duration}s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s forwards`;
+                    
+                    element.appendChild(particle);
+                    setTimeout(() => particle.remove(), 2500);
+                }
+                
+                // 3. 创建底部堆积的沙粒
+                const pileCount = 40;
+                for (let i = 0; i < pileCount; i++) {
+                    setTimeout(() => {
+                        const pileParticle = document.createElement('div');
+                        pileParticle.className = 'dissolve-particle sand-particle';
+                        
+                        // 在底部形成堆积
+                        const pileX = centerX + (Math.random() - 0.5) * 100 * (1 - i / pileCount);
+                        const pileY = rect.height - 20 - Math.random() * 30;
+                        
+                        pileParticle.style.left = pileX + 'px';
+                        pileParticle.style.top = pileY + 'px';
+                        pileParticle.style.animation = `sandPile 0.5s ease-out forwards`;
+                        
+                        element.appendChild(pileParticle);
+                        setTimeout(() => pileParticle.remove(), 2000);
+                    }, 600 + i * 30);
+                }
+                
+                // 4. 创建散落的细沙（更小的粒子）
+                const dustCount = 30;
+                for (let i = 0; i < dustCount; i++) {
+                    const dust = document.createElement('div');
+                    dust.className = 'dissolve-particle';
+                    dust.style.width = '2px';
+                    dust.style.height = '2px';
+                    dust.style.background = 'rgba(212, 165, 116, 0.6)';
+                    dust.style.borderRadius = '50%';
+                    
+                    const startX = centerX + (Math.random() - 0.5) * 20;
+                    const startY = neckY + Math.random() * 50;
+                    
+                    dust.style.left = startX + 'px';
+                    dust.style.top = startY + 'px';
+                    
+                    const delay = 0.3 + Math.random() * 0.5;
+                    dust.style.animation = `sandFall ${0.8 + Math.random() * 0.4}s ease-out ${delay}s forwards`;
+                    dust.style.setProperty('--drift', ((Math.random() - 0.5) * 20) + 'px');
+                    
+                    element.appendChild(dust);
+                    setTimeout(() => dust.remove(), 2000);
+                }
+            }
+
+            // 关闭弹窗函数 - 高级沙漏特效
+            function closeModal() {
+                const modalContent = document.querySelector('.card-modal-content');
+                
+                if (modalContent) {
+                    // 创建高级沙漏粒子效果
+                    createHourglassParticles(modalContent);
+                    
+                    // 添加沙漏消散动画类
+                    modalContent.classList.add('dissolve-hourglass');
+                    
+                    // 添加背景淡出
+                    cardModal.classList.add('closing');
+                    
+                    // 动画完成后重置状态
+                    setTimeout(() => {
+                        cardModal.classList.remove('active', 'closing');
+                        modalContent.classList.remove('dissolve-hourglass');
+                    }, 2000);
+                }
+            }
+
+            // 关闭弹窗按钮
+            if (cardModalClose) {
+                cardModalClose.addEventListener('click', closeModal);
+            }
+
+            // 点击背景关闭弹窗
+            if (cardModal) {
+                cardModal.addEventListener('click', function(e) {
+                    if (e.target === cardModal) {
+                        closeModal();
+                    }
+                });
+            }
+
+            // Cookie提示按钮事件
+            const acceptBtn = document.querySelector('.cookie-btn.accept');
+            const declineBtn = document.querySelector('.cookie-btn.decline');
+            const cookieBanner = document.querySelector('.cookie-banner');
+
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', function() {
+                    cookieBanner.style.display = 'none';
+                });
+            }
+
+            if (declineBtn) {
+                declineBtn.addEventListener('click', function() {
+                    cookieBanner.style.display = 'none';
+                });
+            }
+
+            // "了解更多"按钮伪交互
+            const learnMoreBtn = document.getElementById('learn-more-btn');
+            if (learnMoreBtn) {
+                learnMoreBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 添加点击动画效果
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                    
+                    // 显示提示信息（伪交互）
+                    const originalText = this.textContent;
+                    this.textContent = '即将推出...';
+                    this.style.background = 'rgba(0, 0, 0, 0.3)';
+                    
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.style.background = '';
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

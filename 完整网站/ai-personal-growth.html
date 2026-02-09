@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人成长AI - THE DOOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: url('16.png') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+        }
+
+        /* 导航栏 - 统一风格 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-door {
+            width: 32px;
+            height: 44px;
+            position: relative;
+            margin-right: 10px;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-door::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            background-color: #fff;
+            transform: perspective(100px) rotateY(-15deg);
+        }
+
+        .logo-door::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 16px;
+            width: 10px;
+            height: 28px;
+            background-color: #000;
+            clip-path: polygon(0 0, 100% 0, 70% 100%, 0 100%);
+            z-index: 1;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #7c3aed;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .back-link:hover {
+            color: #6d28d9;
+            background-color: rgba(124, 58, 237, 0.1);
+        }
+
+        /* 主内容区 */
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 20px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* AI头像和标题 */
+        .ai-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .ai-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #333 0%, #666 100%);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .ai-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .ai-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* 聊天区域 */
+        .chat-container {
+            flex: 1;
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            max-height: 500px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 消息气泡 */
+        .message {
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-user {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .message-ai {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .message-user .message-content {
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-ai .message-content {
+            background: #f5f5f5;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .message-ai .message-time {
+            text-align: left;
+        }
+
+        /* 欢迎消息 */
+        .welcome-message {
+            background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
+            border-left: 4px solid #333;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .welcome-message p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* 输入区域 */
+        .input-container {
+            display: flex;
+            gap: 10px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #333;
+            font-size: 1rem;
+            padding: 10px;
+            outline: none;
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+            font-family: inherit;
+        }
+
+        .chat-input::placeholder {
+            color: #999;
+        }
+
+        .send-btn {
+            background: #333;
+            border: none;
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .send-btn .loading {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .send-btn.loading-state .loading {
+            display: inline-block;
+        }
+
+        .send-btn.loading-state .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 建议标签 */
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .suggestion-tag {
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #666;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-tag:hover {
+            background: #333;
+            border-color: #333;
+            color: #fff;
+        }
+
+        /* 错误提示 */
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* 进入选择界面按钮 */
+        .choice-entry-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            animation: fadeIn 0.5s ease, pulse 2s infinite;
+        }
+
+        .choice-entry-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .choice-entry-btn::after {
+            content: '→';
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .choice-entry-btn:hover::after {
+            transform: translateX(5px);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(102, 126, 234, 0.7); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-ai .message-content {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <div class="logo-door"></div>
+                <span>THE DOOR</span>
+            </div>
+            <a href="experience.html" class="back-link">返回选择</a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="ai-header">
+            <div class="ai-avatar">🌱</div>
+            <h1 class="ai-title">成长导师 AI</h1>
+            <p class="ai-subtitle">专注于个人成长与自我提升，陪你探索更好的自己</p>
+        </div>
+
+        <div class="error-message" id="error-message"></div>
+
+        <div class="chat-container" id="chat-container">
+            <div class="welcome-message">
+                <h3>你好，我是你的成长导师</h3>
+                <p>每个人都会在成长路上遇到迷茫和遗憾。那些错过的机会、错误的选择、未曾说出口的话...这些后悔是否时常困扰着你？我在这里倾听，陪你一起从过去的经历中学习和成长。</p>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <textarea class="chat-input" id="chat-input" placeholder="分享你的故事..." rows="1"></textarea>
+            <button class="send-btn" id="send-btn">
+                <span class="loading"></span>
+                <span class="btn-text">发送</span>
+            </button>
+        </div>
+
+        <div class="suggestions">
+            <span class="suggestion-tag">后悔当初没有坚持梦想</span>
+            <span class="suggestion-tag">觉得自己浪费了很多时间</span>
+            <span class="suggestion-tag">错过了重要的机会</span>
+            <span class="suggestion-tag">想改变但不知从何开始</span>
+        </div>
+    </div>
+
+    <script>
+        // API配置
+        const API_BASE_URL = 'http://localhost:8080';
+        const AI_TYPE = 'personal-growth';
+
+        // 对话历史
+        let conversationHistory = [];
+
+        // DOM元素
+        const chatContainer = document.getElementById('chat-container');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const errorMessage = document.getElementById('error-message');
+
+        // 自动调整输入框高度
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // 发送消息
+        async function sendMessage(message = null, isRegretChoice = false) {
+            const messageText = message || chatInput.value.trim();
+            if (!messageText || sendBtn.disabled) return;
+
+            // 如果不是后悔选择，添加用户消息到界面
+            if (!isRegretChoice) {
+                addMessage(messageText, 'user');
+            }
+            
+            // 清空输入框
+            if (!isRegretChoice) {
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+            }
+            
+            // 显示加载状态
+            setLoading(true);
+            hideError();
+
+            try {
+                // 调用API
+                const response = await fetch(`${API_BASE_URL}/api/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ai_type: AI_TYPE,
+                        message: messageText,
+                        history: conversationHistory
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // 添加AI回复到界面（包含后悔选择按钮）
+                    addMessageWithButtons(data.response, 'ai');
+                    
+                    // 更新对话历史
+                    conversationHistory.push(
+                        { role: 'user', content: messageText },
+                        { role: 'assistant', content: data.response }
+                    );
+                    
+                    // 限制历史记录长度（保留最近10轮）
+                    if (conversationHistory.length > 20) {
+                        conversationHistory = conversationHistory.slice(-20);
+                    }
+                } else {
+                    showError(data.error || '请求失败，请稍后重试');
+                }
+            } catch (error) {
+                showError('网络错误，请检查API服务器是否运行');
+                console.error('Error:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // 添加消息到界面（带进入选择界面按钮）
+        function addMessageWithButtons(content, role) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${role}`;
+
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${escapeHtml(content)}
+                    <button class="choice-entry-btn" onclick="goToLevel4()">✨ 做出你的选择</button>
+                </div>
+                <div class="message-time">${timeStr}</div>
+            `;
+
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // 跳转到四级选择界面
+        function goToLevel4() {
+            // 存储当前AI类型到sessionStorage
+            sessionStorage.setItem('currentAIType', AI_TYPE);
+            // 跳转到四级界面
+            window.location.href = 'level4-choice.html';
+        }
+
+        // 检查是否有从四级界面返回的选择
+        function checkRegretChoice() {
+            const choice = sessionStorage.getItem('regretChoice');
+            const timestamp = sessionStorage.getItem('regretChoiceTimestamp');
+            const currentTime = Date.now();
+
+            // 检查选择是否在5分钟内（300000毫秒）
+            if (choice && timestamp && (currentTime - parseInt(timestamp)) < 300000) {
+                // 清除选择
+                sessionStorage.removeItem('regretChoice');
+                sessionStorage.removeItem('regretChoiceTimestamp');
+
+                // 将选择转换为中文
+                const choiceText = choice === 'still-regret' ? '持续后悔中' : '不再后悔了';
+
+                // 添加用户选择到界面
+                addMessage(choiceText, 'user');
+
+                // 自动发送给AI
+                sendMessage(choiceText, true);
+            }
+        }
+
+        // 添加普通消息到界面
+        function addMessage(content, role) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${role}`;
+            
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">${escapeHtml(content)}</div>
+                <div class="message-time">${timeStr}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // HTML转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 设置加载状态
+        function setLoading(loading) {
+            sendBtn.disabled = loading;
+            sendBtn.classList.toggle('loading-state', loading);
+        }
+
+        // 显示错误
+        function showError(msg) {
+            errorMessage.textContent = msg;
+            errorMessage.classList.add('show');
+            setTimeout(hideError, 5000);
+        }
+
+        // 隐藏错误
+        function hideError() {
+            errorMessage.classList.remove('show');
+        }
+
+        // 事件监听
+        sendBtn.addEventListener('click', () => sendMessage());
+        
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 建议标签点击
+        document.querySelectorAll('.suggestion-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                chatInput.value = this.textContent;
+                chatInput.focus();
+            });
+        });
+
+        // 检查API服务器状态
+        async function checkServer() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/chat`, {
+                    method: 'OPTIONS'
+                });
+                console.log('API服务器连接正常');
+            } catch (error) {
+                showError('API服务器未启动，请先运行: python3 api_server.py');
+            }
+        }
+
+        // 页面加载时检查服务器
+        checkServer();
+
+        // 页面加载时检查是否有从四级界面返回的选择
+        document.addEventListener('DOMContentLoaded', checkRegretChoice);
+    </script>
+</body>
+</html>

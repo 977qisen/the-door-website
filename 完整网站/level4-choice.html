@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>你的选择 - THE DOOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
+
+        /* 背景装饰 */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .bg-decoration::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: bgMove 20s linear infinite;
+        }
+
+        @keyframes bgMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* 主容器 */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 1000px;
+            padding: 2rem;
+        }
+
+        /* 标题区域 */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* 卡片容器 */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            perspective: 1000px;
+        }
+
+        /* 选择卡片 */
+        .choice-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.8s ease backwards;
+        }
+
+        .choice-card:nth-child(1) {
+            animation-delay: 0.2s;
+            border-top: 5px solid #e74c3c;
+        }
+
+        .choice-card:nth-child(2) {
+            animation-delay: 0.4s;
+            border-top: 5px solid #27ae60;
+        }
+
+        .choice-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .choice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.3) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .choice-card:hover::before {
+            opacity: 1;
+        }
+
+        /* 卡片图片 */
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .choice-card:nth-child(1) .card-image {
+            animation-delay: 0s;
+        }
+
+        .choice-card:nth-child(2) .card-image {
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* 卡片标题 */
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .choice-card:nth-child(1) .card-title {
+            color: #e74c3c;
+        }
+
+        .choice-card:nth-child(2) .card-title {
+            color: #27ae60;
+        }
+
+        /* 卡片描述 */
+        .card-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 选择按钮 */
+        .choice-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .choice-card:nth-child(1) .choice-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+        }
+
+        .choice-card:nth-child(2) .choice-btn {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: #fff;
+        }
+
+        .choice-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        /* 粒子效果容器 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            animation: particleFloat 10s infinite;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* 动画定义 */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 10;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #333;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .back-btn:hover {
+            background: #fff;
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .choice-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .card-image {
+                height: 150px;
+            }
+
+            .card-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* 选中状态动画 */
+        .choice-card.selected {
+            animation: cardSelected 0.6s ease forwards;
+        }
+
+        @keyframes cardSelected {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* 加载过渡层 */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .transition-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .transition-content {
+            text-align: center;
+        }
+
+        .transition-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="bg-decoration"></div>
+
+    <!-- 粒子效果 -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 返回按钮 -->
+    <button class="back-btn" onclick="goBack()">← 返回对话</button>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <div class="header">
+            <h1>此刻，你的心境如何？</h1>
+            <p>与AI对话之后，你是否找到了内心的答案？请选择最符合你此刻心情的选项，我们将继续陪伴你前行。</p>
+        </div>
+
+        <div class="cards-container">
+            <!-- 持续后悔中 -->
+            <div class="choice-card" onclick="handleChoice('still-regret')">
+                <img src="11.jpg" alt="持续后悔中" class="card-image">
+                <h2 class="card-title">持续后悔中</h2>
+                <p class="card-description">
+                    内心的遗憾依然挥之不去，<br>
+                    那些错过的机会、错误的选择，<br>
+                    仍在深夜困扰着你。
+                </p>
+                <button class="choice-btn">继续倾诉</button>
+            </div>
+
+            <!-- 不再后悔了 -->
+            <div class="choice-card" onclick="handleChoice('no-regret')">
+                <img src="12.jpg" alt="不再后悔了" class="card-image">
+                <h2 class="card-title">不再后悔了</h2>
+                <p class="card-description">
+                    经过对话与思考，<br>
+                    你开始接纳过去的自己，<br>
+                    准备迎接新的可能。
+                </p>
+                <button class="choice-btn">释然前行</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 过渡层 -->
+    <div class="transition-overlay" id="transition-overlay">
+        <div class="transition-content">
+            <div class="transition-spinner"></div>
+            <p>正在返回对话...</p>
+        </div>
+    </div>
+
+    <script>
+        // 创建粒子效果
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // 处理选择
+        function handleChoice(choice) {
+            const cards = document.querySelectorAll('.choice-card');
+            
+            // 添加选中动画
+            cards.forEach(card => {
+                if ((choice === 'still-regret' && card.querySelector('.card-title').textContent.includes('持续')) ||
+                    (choice === 'no-regret' && card.querySelector('.card-title').textContent.includes('不再'))) {
+                    card.classList.add('selected');
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.8)';
+                }
+            });
+
+            // 存储选择到sessionStorage
+            sessionStorage.setItem('regretChoice', choice);
+            sessionStorage.setItem('regretChoiceTimestamp', Date.now());
+
+            // 延迟后返回AI对话页面
+            setTimeout(() => {
+                showTransition();
+            }, 600);
+        }
+
+        // 显示过渡动画
+        function showTransition() {
+            const overlay = document.getElementById('transition-overlay');
+            overlay.classList.add('active');
+
+            setTimeout(() => {
+                goBack();
+            }, 1500);
+        }
+
+        // 返回上一页
+        function goBack() {
+            // 获取来源页面
+            const referrer = document.referrer;
+            if (referrer && referrer.includes('ai-')) {
+                window.location.href = referrer;
+            } else {
+                // 默认返回个人成长页面
+                window.location.href = 'ai-personal-growth.html';
+            }
+        }
+
+        // 页面加载时创建粒子
+        document.addEventListener('DOMContentLoaded', createParticles);
+
+        // 添加鼠标移动视差效果
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.choice-card');
+            const x = (window.innerWidth / 2 - e.pageX) / 50;
+            const y = (window.innerHeight / 2 - e.pageY) / 50;
+
+            cards.forEach((card, index) => {
+                const speed = (index + 1) * 0.5;
+                card.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

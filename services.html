@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务 - Elite AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f8f8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 3rem;
+        }
+        
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: #f4f4f4;
+        }
+        
+        section {
+            padding: 6rem 0;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            padding: 8rem 0 6rem;
+            text-align: center;
+            margin-top: 70px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: #e0e0e0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+        }
+        
+        .service-card {
+            background-color: #fff;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .service-icon {
+            width: 100px;
+            height: 100px;
+            background-color: #f0f9ff;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            color: #00aaff;
+        }
+        
+        .service-card h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .service-card p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+        
+        .service-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .service-features li {
+            color: #666;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .service-features li:before {
+            content: "✓";
+            color: #00aaff;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #00aaff;
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1.1rem;
+        }
+        
+        .btn:hover {
+            background-color: #0088cc;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 170, 255, 0.2);
+        }
+        
+        footer {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-section p,
+        .footer-section li {
+            color: #ccc;
+            line-height: 1.7;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section a:hover {
+            color: #00aaff;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 2rem;
+            text-align: center;
+            color: #999;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script>
+        // 添加页面加载完成后的交互事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航链接点击事件
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href').substring(1);
+                    if (href === '') {
+                        window.location.href = 'index.html';
+                    } else {
+                        window.location.href = `${href}.html`;
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">Elite AI</div>
+            <ul class="nav-links">
+                <li><a href="#">首页</a></li>
+                <li><a href="#services">服务</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#cases">案例</a></li>
+                <li><a href="#contact">联系我们</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>我们的服务</h1>
+            <p>为追求极致效率的精英人士打造的全方位AI生活运维解决方案</p>
+        </div>
+    </section>
+    
+    <section>
+        <div class="container">
+            <h2 class="section-title">核心服务</h2>
+            <div class="grid">
+                <div class="service-card">
+                    <div class="service-icon">🛒</div>
+                    <h3>智能物资管理</h3>
+                    <p>AI实时监控您的家庭物资库存，当洗发水、牙膏等快用完时，自动根据您的偏好和当前价格最优策略下单，确保您永远不会缺少必需品。</p>
+                    <ul class="service-features">
+                        <li>智能库存监控</li>
+                        <li>自动补货下单</li>
+                        <li>价格最优策略</li>
+                        <li>个性化偏好学习</li>
+                        <li>多平台比价</li>
+                    </ul>
+                    <a href="smart-inventory.html" class="btn">了解详情</a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🏠</div>
+                    <h3>智能家政服务</h3>
+                    <p>当您的家中需要清洁时，AI自动分析最佳保洁时间，预约最匹配您需求的专业保洁人员，并下发临时门锁权限，无需您任何干预。</p>
+                    <ul class="service-features">
+                        <li>智能清洁需求分析</li>
+                        <li>自动预约保洁</li>
+                        <li>临时门锁权限管理</li>
+                        <li>服务质量监控</li>
+                        <li>个性化清洁方案</li>
+                    </ul>
+                    <a href="smart-housekeeping.html" class="btn">了解详情</a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📊</div>
+                    <h3>个性化生活分析</h3>
+                    <p>AI学习您的生活习惯和偏好，为您提供个性化的生活优化建议，帮助您实现更高效、更健康的生活方式。</p>
+                    <ul class="service-features">
+                        <li>生活习惯分析</li>
+                        <li>个性化建议</li>
+                        <li>健康生活指导</li>
+                        <li>时间管理优化</li>
+                        <li>消费模式分析</li>
+                    </ul>
+                    <a href="personalized-analysis.html" class="btn">了解详情</a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔒</div>
+                    <h3>智能安全管理</h3>
+                    <p>AI监控您的家庭安全，识别异常情况并及时预警，为您提供全方位的家居安全保障。</p>
+                    <ul class="service-features">
+                        <li>异常行为检测</li>
+                        <li>智能安全预警</li>
+                        <li>访客管理系统</li>
+                        <li>紧急情况响应</li>
+                        <li>24/7 安全监控</li>
+                    </ul>
+                    <a href="#" class="btn">了解详情</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Elite AI</h3>
+                    <p>为精英人士打造的AI生活运维服务，让生活更简单，让效率更极致。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>服务</h3>
+                    <ul>
+                        <li><a href="#">智能物资管理</a></li>
+                        <li><a href="#">智能家政服务</a></li>
+                        <li><a href="#">个性化生活分析</a></li>
+                        <li><a href="#">24/7 客户支持</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li>电话: 400-888-8888</li>
+                        <li>邮箱: info@eliteai.com</li>
+                        <li>地址: 北京市朝阳区国贸中心</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Elite AI. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

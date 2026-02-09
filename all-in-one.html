@@ -1,0 +1,2635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite AI - 高端生活运维服务</title>
+    <style>
+        /* 星空风格沙漏预加载动画 */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #0a0a23 0%, #00001a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            overflow: hidden;
+        }
+        
+        /* 星空背景动画 */
+        .preloader::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 20px 160px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 110px 190px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 170px 50px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 200px 100px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 3s infinite;
+            opacity: 0.5;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+        
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .hourglass {
+            width: 120px;
+            height: 160px;
+            position: relative;
+            animation: rotate 4s linear infinite;
+        }
+        
+        .hourglass::before,
+        .hourglass::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid rgba(255, 215, 0, 0.8);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-sizing: border-box;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.2), transparent 70%),
+                        radial-gradient(circle at 70% 70%, rgba(255, 215, 0, 0.2), transparent 70%),
+                        linear-gradient(to bottom, transparent 0%, transparent 100%);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3),
+                        inset 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+        
+        .hourglass::before {
+            top: 0;
+            left: 0;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.2), transparent 70%),
+                radial-gradient(circle at 70% 70%, rgba(255, 215, 0, 0.2), transparent 70%),
+                linear-gradient(to bottom, 
+                    rgba(255, 215, 0, 0.8) 0%, 
+                    rgba(255, 215, 0, 0.8) 45%, 
+                    transparent 45%, 
+                    transparent 55%, 
+                    rgba(255, 215, 0, 0.3) 55%, 
+                    rgba(255, 215, 0, 0.3) 100%
+                );
+            animation: sandFlow 4s ease-in-out infinite;
+        }
+        
+        .hourglass::after {
+            top: 0;
+            left: 0;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.2), transparent 70%),
+                radial-gradient(circle at 70% 70%, rgba(255, 215, 0, 0.2), transparent 70%),
+                linear-gradient(to bottom, transparent 0%, transparent 100%);
+        }
+        
+        /* 沙漏中间的沙子流动效果 */
+        .hourglass::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid rgba(255, 215, 0, 0.8);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-sizing: border-box;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.2), transparent 70%),
+                radial-gradient(circle at 70% 70%, rgba(255, 215, 0, 0.2), transparent 70%),
+                linear-gradient(to bottom, 
+                    rgba(255, 215, 0, 0.8) 0%, 
+                    rgba(255, 215, 0, 0.8) 45%, 
+                    transparent 45%, 
+                    transparent 55%, 
+                    rgba(255, 215, 0, 0.3) 55%, 
+                    rgba(255, 215, 0, 0.3) 100%
+                );
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3),
+                        inset 0 0 20px rgba(255, 215, 0, 0.1);
+            animation: sandFlow 4s ease-in-out infinite;
+        }
+        
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(180deg);
+            }
+        }
+        
+        @keyframes sandFlow {
+            0% {
+                background: 
+                    radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.2), transparent 70%),
+                    radial-gradient(circle at 70% 70%, rgba(255, 215, 0, 0.2), transparent 70%),
+                    linear-gradient(to bottom, 
+                        rgba(255, 215, 0, 0.8) 0%, 
+                        rgba(255, 215, 0, 0.8) 45%, 
+                        transparent 45%, 
+                        transparent 55%, 
+                        rgba(255, 215, 0, 0.3) 55%, 
+                        rgba(255, 215, 0, 0.3) 100%
+                    );
+            }
+            50% {
+                background: 
+                    radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.2), transparent 70%),
+                    radial-gradient(circle at 70% 70%, rgba(255, 215, 0, 0.2), transparent 70%),
+                    linear-gradient(to bottom, 
+                        transparent 0%, 
+                        transparent 45%, 
+                        transparent 45%, 
+                        transparent 55%, 
+                        rgba(255, 215, 0, 0.8) 55%, 
+                        rgba(255, 215, 0, 0.8) 100%
+                    );
+            }
+            100% {
+                background: 
+                    radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.2), transparent 70%),
+                    radial-gradient(circle at 70% 70%, rgba(255, 215, 0, 0.2), transparent 70%),
+                    linear-gradient(to bottom, 
+                        transparent 0%, 
+                        transparent 45%, 
+                        transparent 45%, 
+                        transparent 55%, 
+                        rgba(255, 215, 0, 0.8) 55%, 
+                        rgba(255, 215, 0, 0.8) 100%
+                    );
+            }
+        }
+        
+        /* 加载完成后的内容淡入效果 */
+        .content {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .content.visible {
+            opacity: 1;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 参考tigerpan.com的布局和风格 */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+        
+        /* 现代布局调整 */
+        section {
+            padding: 10rem 0;
+            position: relative;
+        }
+        
+        /* 调整部分section的padding，使其更加平衡 */
+        .hero {
+            padding: 12rem 0 10rem;
+        }
+        
+        /* 星空风格配色方案 */
+        :root {
+            --primary-color: #ffd700;
+            --secondary-color: #87ceeb;
+            --background-color: #0a0a23;
+            --card-background: rgba(10, 10, 35, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #b0c4de;
+            --border-color: rgba(255, 215, 0, 0.3);
+            --accent-color: rgba(255, 215, 0, 0.1);
+            --gradient-bg: radial-gradient(circle at center, #0a0a23 0%, #00001a 100%);
+            --card-gradient: linear-gradient(135deg, rgba(10, 10, 35, 0.8) 0%, rgba(15, 15, 50, 0.6) 100%);
+            --btn-gradient: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        }
+        
+        /* 使用CSS变量 */
+        body {
+            background: var(--gradient-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* 星空背景效果 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 20px 160px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 110px 190px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 170px 50px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 200px 100px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 5s infinite;
+            opacity: 0.3;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .btn {
+            background: var(--btn-gradient);
+            color: #0a0a23;
+            border: none;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .card {
+            background: var(--card-gradient);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+        
+        .card-icon {
+            background: var(--accent-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .card-icon svg {
+            stroke: var(--primary-color);
+        }
+        
+        /* 优化features部分的背景颜色 */
+        .features {
+            background: rgba(10, 10, 35, 0.6);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* 星空风格导航栏 */
+        header {
+            background: rgba(10, 10, 35, 0.95);
+            color: var(--text-primary);
+            padding: 1.5rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        header.scrolled {
+            padding: 1rem 0;
+            background: rgba(10, 10, 35, 0.98);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+        
+        .nav-links li {
+            margin: 0;
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* 星空风格英雄区域 */
+        .hero {
+            background: radial-gradient(circle at center, #0a0a23 0%, #00001a 100%);
+            color: #fff;
+            text-align: center;
+            margin-top: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 4s infinite;
+            opacity: 0.4;
+            z-index: 0;
+        }
+        
+        .hero .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: var(--primary-color);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        
+        /* 星空风格按钮 */
+        .btn {
+            display: inline-block;
+            background: var(--btn-gradient);
+            color: #0a0a23;
+            padding: 1.2rem 2.5rem;
+            border-radius: 0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            margin-left: 1rem;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 调整按钮在移动端的布局 */
+        @media (max-width: 768px) {
+            .btn-secondary {
+                margin-left: 0;
+                margin-top: 1.5rem;
+            }
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        /* 优化卡片内部布局 */
+        .card {
+            padding: 2.5rem;
+            border-radius: 20px;
+        }
+        
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+        }
+        
+        /* 优化服务详情布局 */
+        .service-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            margin-bottom: 8rem;
+        }
+        
+        /* 调整服务详情在移动端的布局 */
+        @media (max-width: 768px) {
+            .service-details {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+        
+        /* 优化服务图片布局 */
+        .service-image {
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+        
+        .service-image:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 服务图片图标样式 */
+        .service-image svg {
+            width: 80px;
+            height: 80px;
+            stroke: var(--primary-color);
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        /* 星空风格hero部分 */
+        .hero {
+            background: radial-gradient(circle at center, #0a0a23 0%, #00001a 100%);
+            color: var(--text-primary);
+            text-align: center;
+            margin-top: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 4s infinite;
+            opacity: 0.4;
+            z-index: 0;
+        }
+        
+        .hero .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            color: var(--primary-color);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 170, 255, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            background-color: #fafdff;
+        }
+        
+        .svg-icon {
+            width: 40px;
+            height: 40px;
+            stroke: var(--primary-color);
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .feature-icon svg,
+        .value-icon svg {
+            width: 30px;
+            height: 30px;
+            stroke: var(--primary-color);
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+
+        
+        .card p {
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        .features {
+            background-color: #f0f9ff;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            font-size: 1.5rem;
+            color: #00aaff;
+        }
+        
+        .feature-content h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+        
+        .feature-content p {
+            color: #666;
+        }
+        
+        .testimonial {
+            background-color: #1a1a1a;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .testimonial-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .testimonial-quote {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 3rem;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .author-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 1.5rem;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .author-info h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .author-info p {
+            color: #ccc;
+        }
+        
+        .service-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+        
+        .service-text h3 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #1a1a1a;
+        }
+        
+        .service-text p {
+            margin-bottom: 1.5rem;
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        .service-image {
+            background-color: #f0f9ff;
+            border-radius: 24px;
+            padding: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+        }
+        
+        .features-list {
+            list-style: none;
+            margin-bottom: 3rem;
+        }
+        
+        .features-list li {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+            padding-left: 2.5rem;
+        }
+        
+        .features-list li:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .features-list li:after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0.5rem;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        .how-it-works {
+            background-color: #f0f9ff;
+        }
+        
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+        
+        .step-card {
+            background-color: #fff;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background-color: #00aaff;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .step-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .step-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        .values {
+            background-color: #f0f9ff;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+        
+        .value-card {
+            background-color: #fff;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .value-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #f0f9ff;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2rem;
+            color: #00aaff;
+        }
+        
+        .value-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .value-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        .team {
+            background-color: #fff;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+        
+        .team-member {
+            text-align: center;
+        }
+        
+        .member-avatar {
+            width: 160px;
+            height: 160px;
+            background-color: #f0f9ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 3rem;
+        }
+        
+        .team-member h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .team-member p {
+            color: #666;
+        }
+        
+        /* 星空风格页脚 */
+        footer {
+            background: rgba(10, 10, 35, 0.95);
+            color: var(--text-primary);
+            padding: 4rem 0 2rem;
+            border-top: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .footer-section p,
+        .footer-section li {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .footer-section a:hover {
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+            opacity: 0;
+        }
+        
+        .slide-in-left {
+            animation: slideInLeft 0.8s ease forwards;
+            opacity: 0;
+        }
+        
+        .slide-in-right {
+            animation: slideInRight 0.8s ease forwards;
+            opacity: 0;
+        }
+        
+        /* 延迟动画 */
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+        
+        .delay-4 {
+            animation-delay: 0.8s;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .btn-secondary {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .values-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 沙漏预加载动画 -->
+    <div class="preloader">
+        <div class="hourglass"></div>
+    </div>
+    
+    <!-- 页面内容 -->
+    <div class="content">
+    <header>
+        <nav class="container">
+            <div class="logo" onclick="showPage('home')">Elite AI</div>
+            <ul class="nav-links">
+                <li><a onclick="showPage('home')">首页</a></li>
+                <li><a onclick="showPage('services')">服务</a></li>
+                <li><a onclick="showPage('regret-ai')">后悔的AI</a></li>
+                <li><a onclick="showPage('about')">关于</a></li>
+                <li><a onclick="showPage('smart-inventory')">案例</a></li>
+                <li><a onclick="showPage('contact')">联系我们</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- 首页 -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="container">
+                <h1>无感化生活管理</h1>
+                <p>为追求极致效率的精英人士打造的AI生活运维服务，让您彻底摆脱生活琐事的困扰，专注于真正重要的事情</p>
+                <a onclick="showPage('services')" class="btn">开启智能生活</a>
+                <a onclick="showPage('about')" class="btn btn-secondary">了解更多</a>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <h2 class="section-title">核心服务</h2>
+                <div class="grid">
+                    <div class="card fade-in delay-1" onclick="showPage('smart-inventory')">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M16 11V7a4 4 0 0 0-8 0v4"></path>
+                                <rect x="2" y="11" width="20" height="11" rx="2" ry="2"></rect>
+                            </svg>
+                        </div>
+                        <h3>智能物资管理</h3>
+                        <p>AI实时监控您的家庭物资库存，当洗发水、牙膏等快用完时，自动根据您的偏好和当前价格最优策略下单，确保您永远不会缺少必需品。</p>
+                    </div>
+                    <div class="card fade-in delay-2" onclick="showPage('smart-housekeeping')">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                        </div>
+                        <h3>智能家政服务</h3>
+                        <p>当您的家中需要清洁时，AI自动分析最佳保洁时间，预约最匹配您需求的专业保洁人员，并下发临时门锁权限，无需您任何干预。</p>
+                    </div>
+                    <div class="card fade-in delay-3" onclick="showPage('personalized-analysis')">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                            </svg>
+                        </div>
+                        <h3>个性化生活分析</h3>
+                        <p>AI学习您的生活习惯和偏好，为您提供个性化的生活优化建议，帮助您实现更高效、更健康的生活方式。</p>
+                    </div>
+                    <div class="card fade-in delay-4" onclick="showPage('regret-ai')">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                            </svg>
+                        </div>
+                        <h3>后悔的AI模拟人生</h3>
+                        <p>基于心理学研究的AI模拟服务，帮助您体验"另一条路"的可能性，改变对过往选择的认知，避免非适应性选择转换。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">为什么选择 Elite AI</h2>
+                <div class="feature-item slide-in-left delay-1">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h3>节省宝贵时间</h3>
+                        <p>将生活琐事完全交给AI处理，让您每天多出2-3小时专注于工作和个人成长。</p>
+                    </div>
+                </div>
+                <div class="feature-item slide-in-left delay-2">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h3>极致个性化</h3>
+                        <p>AI深度学习您的偏好和习惯，为您提供完全符合个人风格的生活管理方案。</p>
+                    </div>
+                </div>
+                <div class="feature-item slide-in-left delay-3">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h3>安全可靠</h3>
+                        <p>采用银行级加密技术，确保您的家庭数据和隐私安全，让您放心托付。</p>
+                    </div>
+                </div>
+                <div class="feature-item slide-in-left delay-4">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="9" cy="9" r="1"></circle>
+                            <circle cx="9" cy="15" r="1"></circle>
+                            <path d="M19 9a2 2 0 0 0-1.64-.97l-6.88 3.09a2 2 0 0 0 0 3.76l6.88 3.09A2 2 0 0 0 19 15z"></path>
+                            <path d="M1 11h4a2 2 0 0 0 0-4H1"></path>
+                            <path d="M1 17h4a2 2 0 0 0 0-4H1"></path>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h3>智能进化</h3>
+                        <p>AI系统不断学习和进化，随着使用时间的增加，服务会变得越来越贴合您的需求。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="testimonial">
+            <div class="container">
+                <h2 class="section-title" style="color: #fff;">客户评价</h2>
+                <div class="testimonial-content">
+                    <p class="testimonial-quote">"Elite AI彻底改变了我的生活方式。现在我再也不用为洗发水用完、家里需要清洁等琐事烦恼，所有事情都在后台自动处理。这是我用过的最贴心的服务。"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">李</div>
+                        <div class="author-info">
+                            <h4>李明</h4>
+                            <p>科技公司CEO</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 服务页面 -->
+    <div id="services" class="page">
+        <section class="hero">
+            <div class="container">
+                <h1>我们的服务</h1>
+                <p>为追求极致效率的精英人士打造的全方位AI生活运维解决方案</p>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <h2 class="section-title">核心服务</h2>
+                <div class="grid">
+                    <div class="card" onclick="showPage('smart-inventory')">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M16 11V7a4 4 0 0 0-8 0v4"></path>
+                                <rect x="2" y="11" width="20" height="11" rx="2" ry="2"></rect>
+                            </svg>
+                        </div>
+                        <h3>智能物资管理</h3>
+                        <p>AI实时监控您的家庭物资库存，当洗发水、牙膏等快用完时，自动根据您的偏好和当前价格最优策略下单，确保您永远不会缺少必需品。</p>
+                    </div>
+                    <div class="card" onclick="showPage('smart-housekeeping')">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                        </div>
+                        <h3>智能家政服务</h3>
+                        <p>当您的家中需要清洁时，AI自动分析最佳保洁时间，预约最匹配您需求的专业保洁人员，并下发临时门锁权限，无需您任何干预。</p>
+                    </div>
+                    <div class="card" onclick="showPage('personalized-analysis')">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                            </svg>
+                        </div>
+                        <h3>个性化生活分析</h3>
+                        <p>AI学习您的生活习惯和偏好，为您提供个性化的生活优化建议，帮助您实现更高效、更健康的生活方式。</p>
+                    </div>
+                    <div class="card" onclick="showPage('regret-ai')">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                            </svg>
+                        </div>
+                        <h3>后悔的AI模拟人生</h3>
+                        <p>基于心理学研究的AI模拟服务，帮助您体验"另一条路"的可能性，改变对过往选择的认知，避免非适应性选择转换。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 关于我们页面 -->
+    <div id="about" class="page">
+        <section class="hero">
+            <div class="container">
+                <h1>关于我们</h1>
+                <p>为追求极致效率的精英人士打造的AI生活运维服务</p>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <h2 class="section-title">我们的故事</h2>
+                <div class="service-details">
+                    <div class="service-text">
+                        <h3>Elite AI 的诞生</h3>
+                        <p>Elite AI 源于对现代精英人士生活痛点的深刻洞察。我们发现，高收入、高工作的成功人士，虽然追求极高的生活质量，却往往被生活琐事所困扰。</p>
+                        <p>传统的服务模式（如外卖、保洁）仍然需要密切的沟通和选择，这对他们来说也是一种负担。我们相信，科技的力量应该让生活更简单，而不是更复杂。</p>
+                        <p>于是，我们打造了 "生活运维服务"，通过AI接入用户的家庭和消费习惯，实现真正的 "无感化生活管理"。当洗发水快用完时，AI自动下单；当家里需要清洁时，AI自动预约保洁。我们将服务变成了后台静默运行的系统，让用户完全无需操心。</p>
+                    </div>
+                    <div class="service-image">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="9" cy="9" r="1"></circle>
+                            <circle cx="9" cy="15" r="1"></circle>
+                            <path d="M19 9a2 2 0 0 0-1.64-.97l-6.88 3.09a2 2 0 0 0 0 3.76l6.88 3.09A2 2 0 0 0 19 15z"></path>
+                            <path d="M1 11h4a2 2 0 0 0 0-4H1"></path>
+                            <path d="M1 17h4a2 2 0 0 0 0-4H1"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="values">
+            <div class="container">
+                <h2 class="section-title">我们的价值观</h2>
+                <div class="values-grid">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
+                        </div>
+                        <h3>极致效率</h3>
+                        <p>我们相信时间是最宝贵的财富，通过AI技术，让生活琐事处理达到极致效率。</p>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </div>
+                    <h3>个性化服务</h3>
+                    <p>每个人的生活习惯都不同，我们的AI会深度学习用户偏好，提供完全个性化的服务。</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h3>安全可靠</h3>
+                    <p>我们采用银行级加密技术，确保用户的家庭数据和隐私安全，让用户放心托付。</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                            <line x1="6" y1="1" x2="6" y2="4"></line>
+                            <line x1="10" y1="1" x2="10" y2="4"></line>
+                            <line x1="14" y1="1" x2="14" y2="4"></line>
+                        </svg>
+                    </div>
+                    <h3>持续创新</h3>
+                    <p>我们不断探索AI技术在生活管理中的应用，持续优化服务体验，引领行业发展。</p>
+                </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="team">
+            <div class="container">
+                <h2 class="section-title">我们的团队</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="member-avatar">张</div>
+                        <h3>张明</h3>
+                        <p>创始人 & CEO</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">李</div>
+                        <h3>李华</h3>
+                        <p>CTO</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">王</div>
+                        <h3>王芳</h3>
+                        <p>产品总监</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">赵</div>
+                        <h3>赵强</h3>
+                        <p>技术总监</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 后悔的AI模拟人生页面 -->
+    <div id="regret-ai" class="page">
+        <section class="hero">
+            <div class="container">
+                <h1>后悔的AI模拟人生</h1>
+                <p>基于心理学研究的AI模拟服务，帮助您体验"另一条路"的可能性，改变对过往选择的认知</p>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <div class="service-details">
+                    <div class="service-text">
+                        <h3>后悔的AI模拟人生服务</h3>
+                        <p>我们的理念是："后悔"源于将现状与想象中"本可能更好"的替代选项比较。研究发现，即使最初是最佳选择，经历后悔后，人们也倾向于"非适应性选择转换"，做出非最优决定。</p>
+                        <p>实证解释了"为何会美化未选之路"以及"这种情绪如何可能导致更差选择"。可作为论证"体验另一条路会改变认知"的心理学基础。</p>
+                        <h4>核心价值</h4>
+                        <ul class="features-list">
+                            <li>基于心理学研究的AI模拟系统</li>
+                            <li>帮助您体验"另一条路"的可能性</li>
+                            <li>改变对过往选择的认知偏差</li>
+                            <li>避免非适应性选择转换</li>
+                            <li>做出更理性、更优的决策</li>
+                        </ul>
+                    </div>
+                    <div class="service-image">
+                        <svg viewBox="0 0 24 24" width="120" height="120">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="var(--primary-color)"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">心理学基础</h2>
+                <div class="feature-item slide-in-left delay-1">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h3>后悔的心理学机制</h3>
+                        <p>后悔是一种复杂的情绪，源于将现状与想象中"本可能更好"的替代选项进行比较。这种比较往往会导致认知偏差，使人们过度美化未选择的道路。</p>
+                    </div>
+                </div>
+                <div class="feature-item slide-in-left delay-2">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h3>非适应性选择转换</h3>
+                        <p>研究发现，即使最初是最佳选择，经历后悔后，人们也倾向于做出"非适应性选择转换"，即放弃当前的最优选择，转而选择实际上更差的选项。</p>
+                    </div>
+                </div>
+                <div class="feature-item slide-in-left delay-3">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h3>体验另一条路的影响</h3>
+                        <p>实证研究表明，当人们能够真实体验"另一条路"的可能性时，他们对过往选择的认知会发生改变，减少后悔情绪，并做出更理性的决策。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <h2 class="section-title">服务功能</h2>
+                <div class="grid">
+                    <div class="card fade-in delay-1">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                            </svg>
+                        </div>
+                        <h3>人生选择模拟</h3>
+                        <p>基于您的个人历史和偏好，AI模拟您做出不同选择后的人生轨迹，帮助您客观评估"另一条路"的可能性。</p>
+                    </div>
+                    <div class="card fade-in delay-2">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                            </svg>
+                        </div>
+                        <h3>认知偏差分析</h3>
+                        <p>AI分析您对过往选择的认知偏差，帮助您识别并理解"美化未选之路"的心理机制。</p>
+                    </div>
+                    <div class="card fade-in delay-3">
+                        <div class="card-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                            </svg>
+                        </div>
+                        <h3>决策优化建议</h3>
+                        <p>基于心理学原理，AI为您提供决策优化建议，帮助您避免非适应性选择转换，做出更理性的决策。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="how-it-works">
+            <div class="container">
+                <h2 class="section-title">服务流程</h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>个人历史录入</h3>
+                        <p>您可以选择录入关键人生决策点，或授权AI分析您的社交媒体和数字足迹，构建个人历史模型。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>选择模拟场景</h3>
+                        <p>选择您希望模拟的关键决策点，如职业选择、教育路径、人际关系等。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>AI模拟分析</h3>
+                        <p>AI基于您的个人数据和心理学原理，模拟不同选择后的人生轨迹和可能结果。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h3>认知重构</h3>
+                        <p>通过可视化展示和专业分析，帮助您重构对过往选择的认知，减少后悔情绪。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="testimonial">
+            <div class="container">
+                <h2 class="section-title" style="color: #fff;">用户案例</h2>
+                <div class="testimonial-content">
+                    <p class="testimonial-quote">"我一直后悔没有选择创业，总觉得如果当时勇敢一点，现在会更成功。通过后悔的AI模拟，我发现创业道路也充满挑战，而我现在的选择其实更适合我的性格。这让我彻底放下了多年的遗憾。"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">陈</div>
+                        <div class="author-info">
+                            <h4>陈明</h4>
+                            <p>企业高管</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 智能物资管理页面 -->
+    <div id="smart-inventory" class="page">
+        <section class="hero">
+            <div class="container">
+                <h1>智能物资管理</h1>
+                <p>AI实时监控您的家庭物资库存，自动根据偏好和价格最优策略下单</p>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <div class="service-details">
+                    <div class="service-text">
+                        <h3>智能物资管理服务</h3>
+                        <p>Elite AI的智能物资管理服务，通过AI技术实时监控您的家庭物资库存，当洗发水、牙膏等快用完时，自动根据您的偏好和当前价格最优策略下单，确保您永远不会缺少必需品。</p>
+                        <p>我们的系统会学习您的使用习惯和偏好，逐渐了解您对不同品牌、规格的喜好，为您提供越来越个性化的采购建议。同时，我们会在多个平台进行比价，确保您以最优惠的价格获得所需商品。</p>
+                        <ul class="features-list">
+                            <li>智能传感器监控：通过智能传感器实时监测物资使用情况</li>
+                            <li>自动补货：当物资快用完时，系统自动下单</li>
+                            <li>个性化偏好学习：AI学习您的品牌偏好和使用习惯</li>
+                            <li>多平台比价：自动在多个电商平台进行价格比较</li>
+                            <li>库存管理：提供详细的家庭物资库存报告</li>
+                            <li>预算控制：可设置月度采购预算，系统会智能调整采购计划</li>
+                        </ul>
+                        <a class="btn">立即体验</a>
+                    </div>
+                    <div class="service-image">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M16 11V7a4 4 0 0 0-8 0v4"></path>
+                            <rect x="2" y="11" width="20" height="11" rx="2" ry="2"></rect>
+                            <circle cx="7" cy="16" r="1"></circle>
+                            <circle cx="17" cy="16" r="1"></circle>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="how-it-works">
+            <div class="container">
+                <h2 class="section-title">工作原理</h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>智能监测</h3>
+                        <p>通过智能传感器或您的购物历史，实时监测家庭物资的使用情况和库存水平。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>分析预测</h3>
+                        <p>AI分析您的使用习惯，预测物资耗尽时间，提前做好补货准备。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>自动下单</h3>
+                        <p>当物资快用完时，系统自动在价格最优的平台下单，确保及时补货。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h3>持续优化</h3>
+                        <p>系统不断学习您的偏好，优化采购决策，提供越来越个性化的服务。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <h2 class="section-title">客户案例</h2>
+                <div class="service-details">
+                    <div class="service-image">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="7" r="4"></circle>
+                            <path d="M5 21h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path>
+                            <path d="M16 17h6"></path>
+                            <path d="M16 13h6"></path>
+                        </svg>
+                    </div>
+                    <div class="service-text">
+                        <h3>王女士的故事</h3>
+                        <p>王女士是一家跨国公司的高管，平时工作非常繁忙，经常忘记购买生活必需品。自从使用了Elite AI的智能物资管理服务后，她再也不用担心洗发水用完、牙膏缺货的问题了。</p>
+                        <p>"我现在完全不用操心这些琐事了，Elite AI就像我的私人生活助理，总是在我需要之前就把一切安排妥当。有一次我出差回来，发现家里的洗发水、沐浴露都已经补货完毕，连我最喜欢的那个很难买到的品牌都有。"</p>
+                        <p>通过Elite AI的服务，王女士每月节省了约5小时的购物时间，这些时间她可以用来陪伴家人或专注于工作。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 智能家政服务页面 -->
+    <div id="smart-housekeeping" class="page">
+        <section class="hero">
+            <div class="container">
+                <h1>智能家政服务</h1>
+                <p>AI自动分析最佳保洁时间，预约专业人员并下发临时门锁权限</p>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <div class="service-details">
+                    <div class="service-text">
+                        <h3>智能家政服务</h3>
+                        <p>Elite AI的智能家政服务，当您的家中需要清洁时，AI自动分析最佳保洁时间，预约最匹配您需求的专业保洁人员，并下发临时门锁权限，无需您任何干预。</p>
+                        <p>我们的系统会学习您的生活习惯，了解您什么时候在家，什么时候不在家，从而安排最适合的保洁时间。同时，我们会根据您的房屋面积、清洁需求等因素，为您匹配最专业的保洁人员。</p>
+                        <ul class="features-list">
+                            <li>智能清洁需求分析：基于您的生活习惯和房屋状况，自动判断清洁需求</li>
+                            <li>自动预约：系统根据您的日程安排，自动预约最佳保洁时间</li>
+                            <li>专业人员匹配：根据您的需求，匹配最合适的保洁人员</li>
+                            <li>临时门锁权限：自动下发临时门锁权限，无需您在家等待</li>
+                            <li>服务质量监控：对保洁服务质量进行实时监控和评估</li>
+                            <li>个性化清洁方案：根据您的偏好，定制个性化的清洁方案</li>
+                        </ul>
+                        <a class="btn">立即体验</a>
+                    </div>
+                    <div class="service-image">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            <path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="how-it-works">
+            <div class="container">
+                <h2 class="section-title">工作原理</h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>需求分析</h3>
+                        <p>AI分析您的生活习惯、房屋状况和清洁历史，判断最佳清洁时间和频率。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>人员匹配</h3>
+                        <p>根据您的需求和偏好，从我们的专业保洁人员库中匹配最合适的人选。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>自动预约</h3>
+                        <p>系统自动与保洁人员确认时间，并将预约信息发送给您。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h3>权限管理</h3>
+                        <p>在保洁人员到达前，自动下发临时门锁权限，确保安全进入。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">5</div>
+                        <h3>服务执行</h3>
+                        <p>保洁人员按照您的个性化清洁方案执行服务。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">6</div>
+                        <h3>质量评估</h3>
+                        <p>服务完成后，系统自动评估服务质量，并根据您的反馈持续优化。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <h2 class="section-title">客户案例</h2>
+                <div class="service-details">
+                    <div class="service-image">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="7" r="4"></circle>
+                            <path d="M5 21h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path>
+                            <path d="M16 17h6"></path>
+                            <path d="M16 13h6"></path>
+                        </svg>
+                    </div>
+                    <div class="service-text">
+                        <h3>张先生的故事</h3>
+                        <p>张先生是一位投资银行家，工作非常繁忙，经常需要加班和出差。他希望家里保持整洁，但又不想在保洁安排上花费时间。</p>
+                        <p>自从使用了Elite AI的智能家政服务后，张先生再也不用为保洁问题操心了。系统会根据他的工作安排，自动在他出差期间安排保洁，并且会根据他的偏好，使用他指定的清洁产品。</p>
+                        <p>"最让我惊喜的是，系统会学习我的习惯。有一次我临时改变了出差计划，系统居然自动调整了保洁时间，避免了不必要的服务。这真的太智能了！"张先生说道。</p>
+                        <p>通过Elite AI的服务，张先生每月节省了约3小时的保洁安排时间，这些时间他可以用来专注于工作或休息。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 个性化生活分析页面 -->
+    <div id="personalized-analysis" class="page">
+        <section class="hero">
+            <div class="container">
+                <h1>个性化生活分析</h1>
+                <p>AI学习您的生活习惯和偏好，为您提供个性化的生活优化建议</p>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <div class="service-details">
+                    <div class="service-text">
+                        <h3>个性化生活分析服务</h3>
+                        <p>Elite AI的个性化生活分析服务，AI学习您的生活习惯和偏好，为您提供个性化的生活优化建议，帮助您实现更高效、更健康的生活方式。</p>
+                        <p>我们的系统会收集和分析您的生活数据，包括您的作息时间、饮食习惯、运动情况、消费模式等，从而为您提供全面的生活分析和个性化建议。</p>
+                        <ul class="features-list">
+                            <li>生活习惯分析：收集和分析您的日常作息、饮食习惯等数据</li>
+                            <li>个性化建议：根据您的生活数据，提供个性化的生活优化建议</li>
+                            <li>健康生活指导：基于您的健康数据，提供健康生活建议</li>
+                            <li>时间管理优化：分析您的时间使用情况，提供时间管理建议</li>
+                            <li>消费模式分析：分析您的消费习惯，提供消费优化建议</li>
+                            <li>生活质量评估：定期评估您的生活质量，提供改进建议</li>
+                        </ul>
+                        <a class="btn">立即体验</a>
+                    </div>
+                    <div class="service-image">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                            <line x1="10" y1="6" x2="10.01" y2="6"></line>
+                            <line x1="10" y1="18" x2="10.01" y2="18"></line>
+                            <line x1="14" y1="6" x2="14.01" y2="6"></line>
+                            <line x1="14" y1="18" x2="14.01" y2="18"></line>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="how-it-works">
+            <div class="container">
+                <h2 class="section-title">工作原理</h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>数据收集</h3>
+                        <p>通过智能设备、应用程序等渠道，收集您的生活数据。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>数据分析</h3>
+                        <p>AI分析您的生活数据，识别模式和趋势。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>洞察生成</h3>
+                        <p>基于分析结果，生成个性化的生活洞察。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h3>建议提供</h3>
+                        <p>为您提供具体、可操作的生活优化建议。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">5</div>
+                        <h3>实施跟踪</h3>
+                        <p>跟踪您对建议的实施情况，评估效果。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">6</div>
+                        <h3>持续优化</h3>
+                        <p>根据实施效果，持续优化建议，提供更精准的指导。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <h2 class="section-title">客户案例</h2>
+                <div class="service-details">
+                    <div class="service-image">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="7" r="4"></circle>
+                            <path d="M5 21h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path>
+                            <path d="M16 17h6"></path>
+                            <path d="M16 13h6"></path>
+                        </svg>
+                    </div>
+                    <div class="service-text">
+                        <h3>陈女士的故事</h3>
+                        <p>陈女士是一位资深律师，工作压力大，经常加班，生活作息不规律。她希望能够改善自己的生活质量，但不知道从何开始。</p>
+                        <p>自从使用了Elite AI的个性化生活分析服务后，系统通过分析她的生活数据，发现她的睡眠质量差，饮食不规律，缺乏运动。基于这些发现，系统为她提供了个性化的生活优化建议。</p>
+                        <p>"Elite AI的建议非常具体和实用。它不仅告诉我要早睡早起，还根据我的工作安排，为我制定了详细的作息计划。现在我的睡眠质量明显改善，工作效率也提高了。"陈女士说道。</p>
+                        <p>通过Elite AI的服务，陈女士的生活质量得到了显著改善，她感觉更有精力，工作效率也提高了。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 联系我们页面 -->
+    <div id="contact" class="page">
+        <section class="hero">
+            <div class="container">
+                <h1>联系我们</h1>
+                <p>如果您对我们的服务有任何疑问，欢迎随时联系我们</p>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <div class="service-details">
+                    <div class="service-text">
+                        <h3>联系方式</h3>
+                        <p>我们的团队随时准备为您提供帮助和支持。无论您有任何问题或需求，都可以通过以下方式联系我们：</p>
+                        <ul class="features-list">
+                            <li>电话: 400-888-8888</li>
+                            <li>邮箱: info@eliteai.com</li>
+                            <li>地址: 北京市朝阳区国贸中心</li>
+                            <li>工作时间: 周一至周五 9:00-18:00</li>
+                        </ul>
+                        <p>我们承诺在24小时内回复您的咨询，并为您提供专业的解决方案。</p>
+                    </div>
+                    <div class="service-image">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- AI对话功能 -->
+    <div id="ai-chat" style="position: fixed; bottom: 32px; right: 32px; z-index: 1001;">
+        <div id="ai-chat-button" style="width: 60px; height: 60px; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4); transition: all 0.3s ease;">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0a0a23" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+        </div>
+        <div id="ai-chat-container" style="position: absolute; bottom: 70px; right: 0; width: 400px; max-height: 500px; background: rgba(10, 10, 35, 0.95); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); display: none; flex-direction: column; overflow: hidden; backdrop-filter: blur(15px);">
+            <div id="ai-chat-header" style="padding: 20px; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #0a0a23; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);">
+                <h3 style="margin: 0; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">AI助手</h3>
+                <button id="ai-chat-close" style="background: none; border: none; color: #0a0a23; font-size: 18px; cursor: pointer;">&times;</button>
+            </div>
+            <div id="ai-chat-messages" style="padding: 20px; overflow-y: auto; flex: 1;">
+                <div style="display: flex; margin-bottom: 16px;">
+                    <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0a23" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                        </svg>
+                    </div>
+                    <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); padding: 12px 16px; border-radius: 16px; max-width: 80%;">
+                        <p style="margin: 0; color: #ffffff;">您好！我是Elite AI的智能助手，有什么可以帮您的吗？</p>
+                    </div>
+                </div>
+            </div>
+            <div id="ai-chat-input-container" style="padding: 20px; border-top: 1px solid rgba(255, 215, 0, 0.3); display: flex;">
+                <input type="text" id="ai-chat-input" placeholder="请输入您的问题..." style="flex: 1; padding: 12px 16px; border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 24px; outline: none; font-size: 14px; background: rgba(10, 10, 35, 0.8); color: #ffffff;" onfocus="this.style.borderColor='rgba(255, 215, 0, 0.6)'" onblur="this.style.borderColor='rgba(255, 215, 0, 0.3)'">
+                <button id="ai-chat-send" style="width: 40px; height: 40px; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-left: 12px; cursor: pointer; border: none; box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0a23" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Elite AI</h3>
+                    <p>为精英人士打造的AI生活运维服务，让生活更简单，让效率更极致。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>服务</h3>
+                    <ul>
+                        <li><a onclick="showPage('smart-inventory')">智能物资管理</a></li>
+                        <li><a onclick="showPage('smart-housekeeping')">智能家政服务</a></li>
+                        <li><a onclick="showPage('personalized-analysis')">个性化生活分析</a></li>
+                        <li><a>24/7 客户支持</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li>电话: 400-888-8888</li>
+                        <li>邮箱: info@eliteai.com</li>
+                        <li>地址: 北京市朝阳区国贸中心</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Elite AI. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 页面切换功能
+        function showPage(pageId) {
+            // 隐藏所有页面
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示选中的页面
+            const selectedPage = document.getElementById(pageId);
+            if (selectedPage) {
+                selectedPage.classList.add('active');
+                
+                // 添加动画效果
+                const elements = selectedPage.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right');
+                elements.forEach((element, index) => {
+                    // 重置动画
+                    element.style.animation = 'none';
+                    element.offsetHeight; // 触发重排
+                    
+                    // 重新应用动画
+                    const animationClass = element.classList.contains('fade-in') ? 'fadeIn' : 
+                                         element.classList.contains('slide-in-left') ? 'slideInLeft' : 'slideInRight';
+                    element.style.animation = `${animationClass} 0.8s ease forwards`;
+                    element.style.animationDelay = `${index * 0.1}s`;
+                });
+            }
+            
+            // 滚动到页面顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // 服务卡片点击事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 首页服务卡片点击事件
+            const homeServiceCards = document.querySelectorAll('#home .card');
+            homeServiceCards.forEach((card, index) => {
+                card.addEventListener('click', function() {
+                    if (index === 0) {
+                        showPage('smart-inventory');
+                    } else if (index === 1) {
+                        showPage('smart-housekeeping');
+                    } else {
+                        showPage('personalized-analysis');
+                    }
+                });
+            });
+            
+            // 服务页面卡片点击事件
+            const servicePageCards = document.querySelectorAll('#services .card');
+            servicePageCards.forEach((card, index) => {
+                card.addEventListener('click', function() {
+                    if (index === 0) {
+                        showPage('smart-inventory');
+                    } else if (index === 1) {
+                        showPage('smart-housekeeping');
+                    } else if (index === 2) {
+                        showPage('personalized-analysis');
+                    }
+                });
+            });
+            
+            // AI对话功能
+            const aiChatButton = document.getElementById('ai-chat-button');
+            const aiChatContainer = document.getElementById('ai-chat-container');
+            const aiChatClose = document.getElementById('ai-chat-close');
+            const aiChatSend = document.getElementById('ai-chat-send');
+            const aiChatInput = document.getElementById('ai-chat-input');
+            const aiChatMessages = document.getElementById('ai-chat-messages');
+            
+            // 打开聊天窗口
+            aiChatButton.addEventListener('click', function() {
+                aiChatContainer.style.display = aiChatContainer.style.display === 'flex' ? 'none' : 'flex';
+            });
+            
+            // 关闭聊天窗口
+            aiChatClose.addEventListener('click', function() {
+                aiChatContainer.style.display = 'none';
+            });
+            
+            // AI API集成配置
+            const AI_API_CONFIG = {
+                // 连接到本地后端服务
+                useRealAPI: true, // 设置为true使用真实API
+                apiKey: '', // 本地后端服务不需要API密钥
+                apiEndpoint: 'http://localhost:5001/api/chat', // 本地后端服务地址
+                model: 'deepseek-coder-v2'
+            };
+            
+            // 调用AI API获取回复
+            async function callAIAPI(messages) {
+                if (AI_API_CONFIG.useRealAPI) {
+                    try {
+                        const response = await fetch(AI_API_CONFIG.apiEndpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                messages: messages
+                            })
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`API请求失败: ${response.status}`);
+                        }
+                        
+                        const data = await response.json();
+                        return data.response;
+                    } catch (error) {
+                        console.error('API调用错误:', error);
+                        //  fallback到本地知识库
+                        return generateFallbackResponse(messages[messages.length - 1].content);
+                    }
+                } else {
+                    // 模拟API响应
+                    return await generateSimulatedAPIResponse(messages);
+                }
+            }
+            
+            // 生成模拟API响应
+            async function generateSimulatedAPIResponse(messages) {
+                const lastMessage = messages[messages.length - 1].content;
+                
+                // 模拟API延迟
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // 根据消息内容生成响应
+                let response = '';
+                
+                if (lastMessage.includes('你好') || lastMessage.includes('您好')) {
+                    response = '您好！我是Elite AI的智能助手，拥有100GB的专业知识库，专为追求极致效率的精英人士提供服务。请问有什么可以帮您的吗？';
+                } else if (lastMessage.includes('沐浴露') || lastMessage.includes('洗发水') || lastMessage.includes('牙膏')) {
+                    response = '作为拥有100GB知识库的智能助手，我可以告诉您，Elite AI的智能物资管理系统会自动监控您的家庭物资库存。当沐浴露、洗发水或牙膏等快用完时，系统会根据您的偏好和当前价格最优策略自动下单，确保您永远不会缺少必需品。系统会学习您的品牌偏好，记住您喜欢的产品规格和香味，为您提供个性化的采购服务。';
+                } else if (lastMessage.includes('服务') || lastMessage.includes('功能')) {
+                    response = 'Elite AI提供三大核心服务：智能物资管理、智能家政服务和个性化生活分析。基于我100GB的知识库，我可以告诉您，这些服务通过先进的AI技术实现无感化生活管理，让您彻底摆脱生活琐事的困扰。智能物资管理自动监控库存并下单，智能家政服务自动预约保洁并管理权限，个性化生活分析基于您的习惯提供优化建议。';
+                } else if (lastMessage.includes('价格') || lastMessage.includes('费用')) {
+                    response = '根据我的知识库，Elite AI采用会员制模式。基础会员每月399元，包含智能物资管理和基础家政服务；高级会员每月899元，包含所有服务和个性化生活分析。考虑到为您节省的时间和提供的便利，这个价格具有很高的性价比，相当于每小时仅需几十元，却能为您每天节省2-3小时的宝贵时间。';
+                } else if (lastMessage.includes('如何工作') || lastMessage.includes('工作原理')) {
+                    response = 'Elite AI的工作原理基于我100GB知识库中的先进人工智能技术，包括机器学习、自然语言处理和计算机视觉。系统采用分层架构，包括数据收集层、分析处理层和执行层。数据收集层通过智能设备和用户输入获取信息；分析处理层使用AI算法分析数据并生成洞察；执行层根据分析结果自动执行任务，如物资采购、家政预约等。整个过程无缝衔接，实现真正的无感化管理。';
+                } else {
+                    response = '作为拥有100GB知识库的智能助手，我可以为您提供关于Elite AI服务的详细信息，以及生活管理、科技、财经、健康、旅行等多个领域的专业建议。请问您有什么具体问题需要了解吗？';
+                }
+                
+                return response;
+            }
+            
+            // 生成fallback响应
+            function generateFallbackResponse(message) {
+                const bestMatch = findBestMatch(message);
+                const responses = bestMatch.responses;
+                const randomIndex = Math.floor(Math.random() * responses.length);
+                return responses[randomIndex];
+            }
+            
+            // 发送消息
+            async function sendMessage() {
+                const message = aiChatInput.value.trim();
+                if (message) {
+                    // 添加用户消息
+                    addMessage('user', message);
+                    aiChatInput.value = '';
+                    
+                    // 显示正在输入状态
+                    const typingIndicator = document.createElement('div');
+                    typingIndicator.id = 'typing-indicator';
+                    typingIndicator.style.display = 'flex';
+                    typingIndicator.style.marginBottom = '16px';
+                    typingIndicator.innerHTML = `
+                        <div style="width: 36px; height: 36px; background-color: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                        </div>
+                        <div style="background-color: var(--accent-color); padding: 12px 16px; border-radius: 16px; max-width: 80%;">
+                            <p style="margin: 0; color: var(--text-primary);">正在从100GB知识库中检索信息...</p>
+                        </div>
+                    `;
+                    aiChatMessages.appendChild(typingIndicator);
+                    aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+                    
+                    try {
+                        // 准备消息历史
+                        const messageHistory = conversationHistory.map(msg => ({
+                            role: msg.role === 'user' ? 'user' : 'assistant',
+                            content: msg.content
+                        }));
+                        messageHistory.push({ role: 'user', content: message });
+                        
+                        // 调用AI API
+                        const response = await callAIAPI(messageHistory);
+                        
+                        // 移除正在输入状态
+                        if (document.getElementById('typing-indicator')) {
+                            document.getElementById('typing-indicator').remove();
+                        }
+                        
+                        // 添加AI回复
+                        addMessage('ai', response);
+                        
+                        // 更新对话历史
+                        conversationHistory.push({ role: 'assistant', content: response });
+                        
+                        // 限制对话历史长度
+                        if (conversationHistory.length > 20) {
+                            conversationHistory = conversationHistory.slice(-20);
+                        }
+                    } catch (error) {
+                        console.error('发送消息错误:', error);
+                        
+                        // 移除正在输入状态
+                        if (document.getElementById('typing-indicator')) {
+                            document.getElementById('typing-indicator').remove();
+                        }
+                        
+                        // 显示错误消息
+                        addMessage('ai', '抱歉，我暂时无法处理您的请求。请稍后再试。');
+                    }
+                }
+            }
+            
+            // 发送按钮点击事件
+            aiChatSend.addEventListener('click', sendMessage);
+            
+            // 输入框回车事件
+            aiChatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // 添加消息到聊天窗口
+            function addMessage(type, text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.style.display = 'flex';
+                messageDiv.style.marginBottom = '16px';
+                
+                if (type === 'user') {
+                    messageDiv.style.justifyContent = 'flex-end';
+                    messageDiv.innerHTML = `
+                        <div style="background-color: var(--primary-color); color: white; padding: 12px 16px; border-radius: 16px; max-width: 80%;">
+                            <p style="margin: 0;">${text}</p>
+                        </div>
+                    `;
+                } else {
+                    messageDiv.style.justifyContent = 'flex-start';
+                    messageDiv.innerHTML = `
+                        <div style="width: 36px; height: 36px; background-color: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                        </div>
+                        <div style="background-color: var(--accent-color); padding: 12px 16px; border-radius: 16px; max-width: 80%;">
+                            <p style="margin: 0; color: var(--text-primary);">${text}</p>
+                        </div>
+                    `;
+                }
+                
+                aiChatMessages.appendChild(messageDiv);
+                aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+            }
+            
+            // 对话历史存储
+            let conversationHistory = [];
+            
+            // 知识领域索引 - 模拟100GB知识库的分类体系
+            const knowledgeDomains = {
+                // 生活管理领域
+                lifeManagement: {
+                    subdomains: ['物资管理', '家政服务', '生活分析', '时间管理', '健康管理', '娱乐管理'],
+                    size: '15GB'
+                },
+                // 科技领域
+                technology: {
+                    subdomains: ['AI技术', '智能家居', '数码产品', '网络安全', '前沿科技'],
+                    size: '20GB'
+                },
+                // 财经领域
+                finance: {
+                    subdomains: ['投资策略', '财务管理', '税务筹划', '财富管理', '经济趋势'],
+                    size: '12GB'
+                },
+                // 健康领域
+                health: {
+                    subdomains: ['营养饮食', '运动健身', '心理健康', '睡眠管理', '疾病预防'],
+                    size: '10GB'
+                },
+                // 旅行领域
+                travel: {
+                    subdomains: ['旅行规划', '酒店预订', '交通安排', '景点推荐', '旅行安全'],
+                    size: '8GB'
+                },
+                // 教育领域
+                education: {
+                    subdomains: ['学习方法', '技能培训', '教育规划', '知识管理', '在线学习'],
+                    size: '7GB'
+                },
+                // 职场领域
+                career: {
+                    subdomains: ['职业规划', '领导力', '团队管理', '沟通技巧', '工作效率'],
+                    size: '9GB'
+                },
+                // 艺术文化领域
+                culture: {
+                    subdomains: ['艺术鉴赏', '文学作品', '音乐欣赏', '电影评论', '历史文化'],
+                    size: '5GB'
+                },
+                // 其他领域
+                other: {
+                    subdomains: ['时尚潮流', '美食烹饪', '宠物护理', '社交礼仪', '环境保护'],
+                    size: '4GB'
+                }
+            };
+            
+            // 知识检索模拟器
+            function simulateKnowledgeRetrieval(query) {
+                // 模拟从100GB知识库中检索信息的过程
+                console.log(`[知识检索] 正在从100GB知识库中检索关于"${query}"的信息...`);
+                
+                // 模拟检索延迟
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        // 根据查询内容生成相关的知识领域
+                        const relevantDomains = [];
+                        for (const [domain, info] of Object.entries(knowledgeDomains)) {
+                            if (query.toLowerCase().includes(domain.toLowerCase()) || 
+                                info.subdomains.some(subdomain => query.toLowerCase().includes(subdomain.toLowerCase()))) {
+                                relevantDomains.push(domain);
+                            }
+                        }
+                        
+                        // 如果没有找到相关领域，随机选择一些
+                        if (relevantDomains.length === 0) {
+                            const allDomains = Object.keys(knowledgeDomains);
+                            for (let i = 0; i < 2; i++) {
+                                const randomDomain = allDomains[Math.floor(Math.random() * allDomains.length)];
+                                if (!relevantDomains.includes(randomDomain)) {
+                                    relevantDomains.push(randomDomain);
+                                }
+                            }
+                        }
+                        
+                        resolve(relevantDomains);
+                    }, 300);
+                });
+            }
+            
+            // 扩展知识库
+            const knowledgeBase = {
+                // Elite AI服务相关
+                services: {
+                    keywords: ['服务', '功能', '核心服务'],
+                    responses: [
+                        '我们提供三大核心服务：智能物资管理、智能家政服务和个性化生活分析。通过AI技术，我们实现了真正的无感化生活管理，让您彻底摆脱生活琐事的困扰。',
+                        'Elite AI的核心服务包括智能物资管理（自动监控库存并下单）、智能家政服务（自动预约保洁并管理权限）和个性化生活分析（基于您的习惯提供优化建议）。',
+                        '我们的服务体系专为追求极致效率的精英人士设计，涵盖了生活的各个方面，从日常物资管理到家政服务，再到个人生活优化。'
+                    ]
+                },
+                smartInventory: {
+                    keywords: ['智能物资管理', '物资管理', '库存管理', '自动下单', '沐浴露', '洗发水', '牙膏', '没了', '用完了', '缺货'],
+                    responses: [
+                        '智能物资管理服务通过AI实时监控您的家庭物资库存，当洗发水、牙膏等快用完时，自动根据您的偏好和当前价格最优策略下单，确保您永远不会缺少必需品。系统会学习您的使用习惯和品牌偏好，逐渐为您提供越来越个性化的采购建议。同时，我们会在多个平台进行比价，确保您以最优惠的价格获得所需商品。',
+                        '我们的智能物资管理系统采用先进的AI算法，不仅能监控库存水平，还能预测您的使用速度，提前下单确保物资充足。系统会考虑您的品牌偏好、价格敏感度和使用习惯，为您提供最优的采购方案。',
+                        '通过智能物资管理，您再也不用担心洗发水用完、牙膏缺货等问题。系统会自动处理所有采购细节，包括比价、下单、跟踪物流，让您完全不用操心。',
+                        '如果您家里的沐浴露没了，Elite AI的智能物资管理系统会自动为您处理。系统会根据您之前的购买记录和偏好，选择您喜欢的品牌和规格，然后在多个平台进行比价，以最优惠的价格为您下单。您无需任何操作，只需等待商品送达即可。',
+                        '当您的家庭物资（如沐浴露、洗发水、牙膏等）快用完时，我们的AI系统会提前检测到并自动为您下单。系统会学习您的品牌偏好，确保购买您喜欢的产品，同时会考虑当前的价格和促销活动，为您节省开支。',
+                        '对于沐浴露这类日常用品，Elite AI的智能物资管理系统会监控您的使用情况，当库存不足时自动下单。系统会记住您喜欢的品牌、规格和香味，确保每次购买的都是您偏好的产品，让您永远不用担心生活必需品缺货的问题。'
+                    ]
+                },
+                smartHousekeeping: {
+                    keywords: ['智能家政服务', '家政服务', '保洁', '家政预约'],
+                    responses: [
+                        '智能家政服务通过AI自动分析最佳保洁时间，预约最匹配您需求的专业保洁人员，并下发临时门锁权限，无需您任何干预。系统会学习您的生活习惯，了解您什么时候在家，什么时候不在家，从而安排最适合的保洁时间。同时，我们会根据您的房屋面积、清洁需求等因素，为您匹配最专业的保洁人员。',
+                        '我们的智能家政服务采用人机协同模式，AI负责分析需求、匹配人员和管理时间，而专业保洁人员负责提供高质量的服务。系统会记录您的偏好，如清洁频率、重点区域和使用的清洁产品，确保每次服务都符合您的期望。',
+                        '智能家政服务让您彻底摆脱家政安排的困扰。系统会根据您的日程自动安排保洁时间，为您匹配最合适的保洁人员，并通过临时门锁权限确保安全进入，您完全不需要在家等待。'
+                    ]
+                },
+                personalizedAnalysis: {
+                    keywords: ['个性化生活分析', '生活分析', '生活优化', '习惯分析'],
+                    responses: [
+                        '个性化生活分析服务通过AI学习您的生活习惯和偏好，为您提供个性化的生活优化建议，帮助您实现更高效、更健康的生活方式。我们的系统会收集和分析您的生活数据，包括作息时间、饮食习惯、运动情况、消费模式等，从而为您提供全面的生活分析和个性化建议。',
+                        '我们的个性化生活分析系统采用先进的AI算法，分析您的生活数据并识别模式和趋势。系统会生成详细的生活洞察，并为您提供具体、可操作的优化建议，帮助您改善生活质量和提高效率。',
+                        '通过个性化生活分析，您可以获得关于自己生活习惯的深度洞察，了解如何优化时间管理、改善睡眠质量、调整饮食习惯等。系统会根据您的反馈不断调整建议，确保它们符合您的实际需求。'
+                    ]
+                },
+                pricing: {
+                    keywords: ['价格', '费用', '会员', '收费'],
+                    responses: [
+                        '我们的服务价格根据您的具体需求而定，采用会员制模式。基础会员每月399元，包含智能物资管理和基础家政服务；高级会员每月899元，包含所有服务和个性化生活分析。您可以联系我们的客服获取详细的价格方案和定制服务。',
+                        'Elite AI采用灵活的会员制定价策略，基础会员适合需要基本生活管理的用户，而高级会员则适合追求全方位生活优化的精英人士。我们还提供企业会员方案，为企业高管团队提供定制服务。',
+                        '考虑到我们为您节省的时间和提供的便利，我们的会员价格具有很高的性价比。基础会员每月仅需399元，而高级会员每月899元，相当于每小时仅需几十元，却能为您每天节省2-3小时的宝贵时间。'
+                    ]
+                },
+                contact: {
+                    keywords: ['联系', '电话', '邮箱', '地址', '客服'],
+                    responses: [
+                        '您可以通过以下方式联系我们：电话: 400-888-8888，邮箱: info@eliteai.com，地址: 北京市朝阳区国贸中心。我们的工作时间是周一至周五 9:00-18:00，承诺在24小时内回复您的咨询。',
+                        'Elite AI的客服团队随时为您提供支持。您可以通过电话400-888-8888或邮箱info@eliteai.com联系我们，也可以直接前往我们位于北京市朝阳区国贸中心的办公室。我们的客服人员会在24小时内响应您的咨询。',
+                        '如果您有任何问题或需求，欢迎随时联系我们的客服团队。我们提供电话、邮箱和线下咨询等多种联系方式，确保您能够方便地获得所需的支持和信息。'
+                    ]
+                },
+                howItWorks: {
+                    keywords: ['如何工作', '工作原理', '原理', '运行机制'],
+                    responses: [
+                        '我们的系统通过AI技术实现无感化生活管理。首先，系统会学习您的生活习惯和偏好；然后，根据这些信息自动执行相应的任务，如物资采购、家政预约等；最后，系统会持续优化服务，为您提供越来越个性化的体验。',
+                        'Elite AI的工作原理基于先进的人工智能技术，包括机器学习、自然语言处理和计算机视觉。系统会收集和分析您的生活数据，学习您的习惯和偏好，然后自动执行相应的任务，如监控库存、预约家政服务等。',
+                        '我们的系统采用分层架构，包括数据收集层、分析处理层和执行层。数据收集层通过智能设备和用户输入获取信息；分析处理层使用AI算法分析数据并生成洞察；执行层根据分析结果自动执行任务。整个过程无缝衔接，实现真正的无感化管理。'
+                    ]
+                },
+                security: {
+                    keywords: ['安全', '隐私', '数据安全', '保护'],
+                    responses: [
+                        '我们非常重视您的隐私和数据安全。所有数据均采用银行级加密技术进行保护，并且我们不会向任何第三方共享您的个人信息。临时门锁权限采用一次性密码和时间限制，确保您的家居安全。',
+                        'Elite AI采用多层次的安全措施保护您的隐私和数据。我们使用银行级加密技术传输和存储数据，实施严格的访问控制，并且定期进行安全审计。临时门锁权限采用一次性密码和时间限制，确保只有授权人员能够进入您的住所。',
+                        '在数据安全方面，我们严格遵守国际数据保护标准，包括GDPR和CCPA。我们不会向任何第三方共享您的个人信息，并且您有权随时查看、修改或删除您的数据。我们的安全团队全天候监控系统，确保您的数据和家庭安全。'
+                    ]
+                },
+                gettingStarted: {
+                    keywords: ['开始使用', '如何开始', '注册', '设置'],
+                    responses: [
+                        '要开始使用Elite AI服务，您只需完成以下步骤：1. 注册成为我们的会员；2. 完成初始设置，包括家庭信息、偏好设置等；3. 根据需要安装智能传感器（可选）；4. 系统开始学习您的生活习惯并提供服务。我们的客服团队会全程为您提供支持。',
+                        '开始使用Elite AI非常简单。首先，您可以通过我们的网站或APP注册会员；然后，我们的客服会联系您进行详细的需求分析和偏好设置；最后，系统会开始学习您的生活习惯并自动提供服务。整个过程通常只需1-2天即可完成。',
+                        '我们为新会员提供全程引导服务，包括一对一的需求分析、个性化设置指导和系统使用培训。我们的客服团队会确保您顺利完成所有设置步骤，并在您开始使用服务后持续提供支持。'
+                    ]
+                },
+                advantages: {
+                    keywords: ['优势', '为什么选择', '好处', '价值'],
+                    responses: [
+                        '选择Elite AI的优势包括：1. 节省宝贵时间，每天为您多出2-3小时专注于重要事情；2. 极致个性化服务，AI深度学习您的偏好；3. 安全可靠，采用银行级加密技术；4. 智能进化，服务会随着使用时间变得越来越贴合您的需求；5. 全方位服务，覆盖物资管理、家政服务和生活分析。',
+                        'Elite AI的核心价值在于为您节省宝贵的时间和精力，让您能够专注于真正重要的事情。我们的服务不仅能够自动处理生活琐事，还能不断学习和优化，为您提供越来越个性化的体验。与传统服务相比，我们的AI驱动模式更加高效、智能和便捷。',
+                        '选择Elite AI，您将获得：1. 更多自由时间，摆脱生活琐事的困扰；2. 更高生活质量，享受个性化的生活管理服务；3. 更高效的生活方式，通过数据分析获得优化建议；4. 更安心的保障，银行级的安全措施保护您的隐私和家庭安全。'
+                    ]
+                },
+                cases: {
+                    keywords: ['案例', '客户', '成功案例', '用户故事'],
+                    responses: [
+                        '我们的客户包括科技公司CEO、投资银行家、资深律师等高端人士。例如，一位科技公司CEO通过我们的服务，每月节省了约5小时的购物时间；一位投资银行家在出差期间，系统自动为他安排了家政服务；一位资深律师通过个性化生活分析，改善了睡眠质量和工作效率。',
+                        'Elite AI的客户群体主要是追求极致效率的精英人士，包括企业高管、创业者、专业人士等。许多客户反馈，使用我们的服务后，他们能够将更多时间投入到工作和个人成长中，生活质量和工作效率都得到了显著提升。',
+                        '我们有许多成功案例，其中包括：一位跨国公司高管通过智能物资管理，彻底解决了频繁出差导致的家居物资管理问题；一位著名设计师通过个性化生活分析，调整了工作和休息时间，提高了创作灵感；一位医生通过智能家政服务，在繁忙的工作之余，能够回到一个整洁舒适的家。'
+                    ]
+                },
+                future: {
+                    keywords: ['未来', '发展', '规划', '愿景'],
+                    responses: [
+                        'Elite AI正在不断探索AI技术在生活管理中的应用。未来，我们计划引入更多智能设备集成，提供更全面的家庭管理解决方案，包括智能健康监测、智能娱乐推荐等。我们相信，随着AI技术的不断发展，我们将为用户提供更加智能、个性化的生活管理服务。',
+                        '我们的未来发展规划包括：1. 扩展智能设备集成，支持更多智能家居设备；2. 引入智能健康监测服务，帮助用户管理健康状况；3. 开发智能娱乐推荐系统，根据用户偏好提供个性化的娱乐内容；4. 建立社区共享平台，让用户之间分享生活管理经验和技巧。',
+                        'Elite AI的愿景是成为全球领先的AI生活管理服务提供商，通过技术创新让每个人都能享受高效、便捷、个性化的生活。我们将持续投入研发，探索AI技术在生活管理中的新应用，为用户创造更大的价值。'
+                    ]
+                },
+                
+                // 日常生活常识
+                dailyLife: {
+                    keywords: ['生活', '日常', '习惯', '健康'],
+                    responses: [
+                        '健康的生活习惯对提高效率和生活质量至关重要。建议您保持规律的作息时间，每天保证7-8小时的睡眠，坚持适量运动，保持均衡饮食，并且学会合理安排时间，避免过度压力。',
+                        '对于忙碌的精英人士来说，时间管理是关键。建议您采用四象限法则，将任务分为紧急重要、重要不紧急、紧急不重要和不紧急不重要四类，优先处理重要不紧急的任务，这样可以避免危机管理，提高工作效率。',
+                        '保持工作与生活的平衡对长期发展非常重要。建议您设置明确的工作时间边界，避免工作侵占个人生活时间；定期安排休闲活动，放松身心；与家人朋友保持良好的沟通，维护人际关系。'
+                    ]
+                },
+                
+                // 科技知识
+                technology: {
+                    keywords: ['科技', 'AI', '人工智能', '技术'],
+                    responses: [
+                        '人工智能技术正在深刻改变我们的生活方式。从智能家居到智能助手，AI技术正在帮助我们自动化日常任务，提高效率，并且为我们提供个性化的服务。Elite AI正是利用这些先进技术，为您提供无感化的生活管理服务。',
+                        'AI技术的发展速度非常快，特别是在机器学习和自然语言处理领域。这些技术使得AI系统能够不断学习和进化，为用户提供越来越智能、个性化的服务。Elite AI的系统也在不断学习您的生活习惯，为您提供越来越贴合需求的服务。',
+                        '未来，AI技术将在更多领域发挥重要作用，包括健康管理、教育、交通等。随着技术的不断进步，我们可以期待AI为我们的生活带来更多便利和价值。Elite AI也在不断探索新的技术应用，为用户提供更加全面、智能的生活管理解决方案。'
+                    ]
+                },
+                
+                // 财经投资
+                finance: {
+                    keywords: ['财经', '投资', '理财', '财务'],
+                    responses: [
+                        '对于高收入人群来说，合理的财务规划非常重要。建议您多元化投资，分散风险；定期进行财务体检，评估资产配置；考虑税务筹划，合法降低税负；并且为未来制定明确的财务目标，包括退休规划、子女教育等。',
+                        '时间是投资最好的朋友。建议您采用长期投资策略，避免频繁交易；关注资产的长期增值，而不是短期波动；定期定额投资，利用复利效应；并且保持足够的流动性，以应对突发情况。',
+                        '对于忙碌的精英人士来说，自动化理财工具可以帮助您节省时间并提高投资效率。这些工具可以根据您的风险偏好和财务目标，自动进行资产配置和再平衡，让您无需花费太多时间在理财上。'
+                    ]
+                },
+                
+                // 旅行休闲
+                travel: {
+                    keywords: ['旅行', '休闲', '度假', '放松'],
+                    responses: [
+                        '旅行是放松身心、拓展视野的好方式。建议您提前规划旅行行程，避免临时安排带来的压力；选择适合自己的旅行方式，无论是奢华度假还是文化探索；合理安排工作和旅行时间，确保旅行期间工作不受影响。',
+                        '对于忙碌的精英人士来说，短暂的休闲时光非常宝贵。建议您在周末安排一些轻松的活动，如瑜伽、冥想、户外活动等，帮助您放松身心；定期安排较长时间的度假，彻底远离工作压力；并且学会在日常生活中寻找小确幸，保持积极的心态。',
+                        '智能旅行规划工具可以帮助您节省时间并提高旅行体验。这些工具可以根据您的偏好，自动推荐目的地、酒店和活动；帮助您安排行程，确保时间合理利用；并且在旅行期间提供实时支持，解决可能出现的问题。'
+                    ]
+                },
+                
+                // 通用问候
+                greetings: {
+                    keywords: ['你好', '您好', 'hi', 'hello'],
+                    responses: [
+                        '您好！我是Elite AI的智能助手，专为追求极致效率的精英人士提供无感化生活管理服务。有什么可以帮您的吗？',
+                        '你好！很高兴为您服务。我是Elite AI的智能助手，致力于为您提供全方位的生活管理解决方案。请问有什么可以帮助您的？',
+                        '您好！欢迎使用Elite AI服务。我是您的智能生活助手，随时为您提供关于服务、技术或生活方面的帮助。请问您今天需要了解什么？'
+                    ]
+                },
+                
+                // 通用问题
+                general: {
+                    keywords: [],
+                    responses: [
+                        '感谢您的咨询。Elite AI致力于为精英人士提供无感化生活管理服务，通过智能物资管理、智能家政服务和个性化生活分析，让您彻底摆脱生活琐事的困扰。如果您有任何关于我们服务的问题，或者需要了解更多信息，请随时告诉我。',
+                        '作为您的智能生活助手，我随时为您提供帮助。无论是关于Elite AI的服务细节，还是生活、工作方面的建议，我都很乐意为您解答。请问您还有什么需要了解的？',
+                        'Elite AI的目标是让您的生活更加高效、便捷和美好。我们的团队不断努力，为您提供最优质的服务。如果您有任何问题或建议，欢迎随时告诉我，我会及时为您解答和反馈。'
+                    ]
+                }
+            };
+            
+            // 相似度计算函数
+            function calculateSimilarity(text1, text2) {
+                const words1 = text1.toLowerCase().split(/\s+/);
+                const words2 = text2.toLowerCase().split(/\s+/);
+                
+                // 计算精确匹配的关键词
+                const exactMatches = words1.filter(word => words2.includes(word));
+                
+                // 计算部分匹配（如"沐浴露"包含"露"）
+                const partialMatches = words1.filter(word1 => 
+                    words2.some(word2 => word1.includes(word2) || word2.includes(word1))
+                );
+                
+                // 综合得分
+                const totalMatches = [...new Set([...exactMatches, ...partialMatches])];
+                const union = [...new Set([...words1, ...words2])];
+                
+                // 增加权重给具体物品名称
+                const itemKeywords = ['沐浴露', '洗发水', '牙膏', '库存', '缺货', '没了', '用完了'];
+                const itemMatchScore = totalMatches.filter(word => itemKeywords.includes(word)).length * 0.5;
+                
+                return (totalMatches.length / union.length) + itemMatchScore;
+            }
+            
+            // 查找最佳匹配的知识库条目
+            function findBestMatch(message) {
+                let bestMatch = null;
+                let highestScore = 0;
+                
+                for (const [key, entry] of Object.entries(knowledgeBase)) {
+                    for (const keyword of entry.keywords) {
+                        const score = calculateSimilarity(message, keyword);
+                        if (score > highestScore) {
+                            highestScore = score;
+                            bestMatch = entry;
+                        }
+                    }
+                }
+                
+                // 如果相似度高于0.3，则返回匹配结果，否则返回通用回答
+                return highestScore > 0.3 ? bestMatch : knowledgeBase.general;
+            }
+            
+            // 生成回答
+            async function generateResponse(message) {
+                // 添加到对话历史
+                conversationHistory.push({ role: 'user', content: message });
+                
+                // 模拟从100GB知识库中检索信息
+                const relevantDomains = await simulateKnowledgeRetrieval(message);
+                
+                // 查找最佳匹配
+                const bestMatch = findBestMatch(message);
+                
+                // 随机选择一个回答
+                const responses = bestMatch.responses;
+                const randomIndex = Math.floor(Math.random() * responses.length);
+                let response = responses[randomIndex];
+                
+                // 如果是关于Elite AI服务的问题，添加知识库检索的信息
+                if (message.includes('服务') || message.includes('功能') || message.includes('如何工作') || message.includes('智能')) {
+                    // 添加知识库检索的模拟信息
+                    const domainInfo = relevantDomains.map(domain => {
+                        const domainData = knowledgeDomains[domain];
+                        return `${domainData.subdomains[0]} (${domainData.size})`;
+                    }).join('、');
+                    
+                    response += `\n\n[知识来源] 信息检索自100GB知识库，涉及领域：${domainInfo}等多个专业领域。`;
+                }
+                
+                // 添加到对话历史
+                conversationHistory.push({ role: 'assistant', content: response });
+                
+                // 限制对话历史长度，只保留最近10轮
+                if (conversationHistory.length > 20) {
+                    conversationHistory = conversationHistory.slice(-20);
+                }
+                
+                return response;
+            }
+            
+            // 模拟AI回复
+            async function getAIResponse(message) {
+                return await generateResponse(message);
+            }
+        });
+        
+        // 页面加载完成后隐藏预加载动画
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const preloader = document.querySelector('.preloader');
+                const content = document.querySelector('.content');
+                
+                preloader.classList.add('hidden');
+                content.classList.add('visible');
+            }, 2000); // 延迟2秒，让用户看到完整的沙漏动画
+        });
+    </script>
+    </div> <!-- 闭合content标签 -->
+</body>
+</html>

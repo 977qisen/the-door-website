@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - Elite AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f8f8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 3rem;
+        }
+        
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: #f4f4f4;
+        }
+        
+        section {
+            padding: 6rem 0;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            padding: 8rem 0 6rem;
+            text-align: center;
+            margin-top: 70px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: #e0e0e0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .about-text h3 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #1a1a1a;
+        }
+        
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        .about-image {
+            background-color: #f0f9ff;
+            border-radius: 24px;
+            padding: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+        }
+        
+        .values {
+            background-color: #f0f9ff;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+        
+        .value-card {
+            background-color: #fff;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .value-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #f0f9ff;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2rem;
+            color: #00aaff;
+        }
+        
+        .value-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .value-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        .team {
+            background-color: #fff;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+        
+        .team-member {
+            text-align: center;
+        }
+        
+        .member-avatar {
+            width: 160px;
+            height: 160px;
+            background-color: #f0f9ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 3rem;
+        }
+        
+        .team-member h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .team-member p {
+            color: #666;
+        }
+        
+        footer {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-section p,
+        .footer-section li {
+            color: #ccc;
+            line-height: 1.7;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section a:hover {
+            color: #00aaff;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 2rem;
+            text-align: center;
+            color: #999;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .values-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script>
+        // 添加页面加载完成后的交互事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航链接点击事件
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href').substring(1);
+                    if (href === '') {
+                        window.location.href = 'index.html';
+                    } else {
+                        window.location.href = `${href}.html`;
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">Elite AI</div>
+            <ul class="nav-links">
+                <li><a href="#">首页</a></li>
+                <li><a href="#services">服务</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#cases">案例</a></li>
+                <li><a href="#contact">联系我们</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>关于我们</h1>
+            <p>为追求极致效率的精英人士打造的AI生活运维服务</p>
+        </div>
+    </section>
+    
+    <section>
+        <div class="container">
+            <h2 class="section-title">我们的故事</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Elite AI 的诞生</h3>
+                    <p>Elite AI 源于对现代精英人士生活痛点的深刻洞察。我们发现，高收入、高工作的成功人士，虽然追求极高的生活质量，却往往被生活琐事所困扰。</p>
+                    <p>传统的服务模式（如外卖、保洁）仍然需要密切的沟通和选择，这对他们来说也是一种负担。我们相信，科技的力量应该让生活更简单，而不是更复杂。</p>
+                    <p>于是，我们打造了 "生活运维服务"，通过AI接入用户的家庭和消费习惯，实现真正的 "无感化生活管理"。当洗发水快用完时，AI自动下单；当家里需要清洁时，AI自动预约保洁。我们将服务变成了后台静默运行的系统，让用户完全无需操心。</p>
+                </div>
+                <div class="about-image">🤖</div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="values">
+        <div class="container">
+            <h2 class="section-title">我们的价值观</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">⚡</div>
+                    <h3>极致效率</h3>
+                    <p>我们相信时间是最宝贵的财富，通过AI技术，让生活琐事处理达到极致效率。</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🎯</div>
+                    <h3>个性化服务</h3>
+                    <p>每个人的生活习惯都不同，我们的AI会深度学习用户偏好，提供完全个性化的服务。</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🔒</div>
+                    <h3>安全可靠</h3>
+                    <p>我们采用银行级加密技术，确保用户的家庭数据和隐私安全，让用户放心托付。</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🚀</div>
+                    <h3>持续创新</h3>
+                    <p>我们不断探索AI技术在生活管理中的应用，持续优化服务体验，引领行业发展。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="team">
+        <div class="container">
+            <h2 class="section-title">我们的团队</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">张</div>
+                    <h3>张明</h3>
+                    <p>创始人 & CEO</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">李</div>
+                    <h3>李华</h3>
+                    <p>CTO</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">王</div>
+                    <h3>王芳</h3>
+                    <p>产品总监</p>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">赵</div>
+                    <h3>赵强</h3>
+                    <p>技术总监</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Elite AI</h3>
+                    <p>为精英人士打造的AI生活运维服务，让生活更简单，让效率更极致。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>服务</h3>
+                    <ul>
+                        <li><a href="#">智能物资管理</a></li>
+                        <li><a href="#">智能家政服务</a></li>
+                        <li><a href="#">个性化生活分析</a></li>
+                        <li><a href="#">24/7 客户支持</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li>电话: 400-888-8888</li>
+                        <li>邮箱: info@eliteai.com</li>
+                        <li>地址: 北京市朝阳区国贸中心</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Elite AI. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

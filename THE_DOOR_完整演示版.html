@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE DOOR - 探索另一种人生可能</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+        }
+
+        /* 页面容器 */
+        .page { display: none; min-height: 100vh; }
+        .page.active { display: block; }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .logo-door {
+            width: 32px;
+            height: 44px;
+            position: relative;
+            margin-right: 10px;
+            background-color: #000;
+        }
+
+        .logo-door::before {
+            content: '';
+            position: absolute;
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            background-color: #fff;
+            transform: perspective(100px) rotateY(-15deg);
+        }
+
+        .logo-door::after {
+            content: '';
+            position: absolute;
+            top: 12px; left: 16px;
+            width: 10px; height: 28px;
+            background-color: #000;
+            clip-path: polygon(0 0, 100% 0, 70% 100%, 0 100%);
+        }
+
+        .navbar-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .navbar-links li {
+            margin-left: 2rem;
+        }
+
+        .navbar-link {
+            text-decoration: none;
+            color: #000;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .navbar-link:hover {
+            color: #4a6fa5;
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #7c3aed;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            color: #6d28d9;
+            background-color: rgba(124, 58, 237, 0.1);
+        }
+
+        /* ===== 开场动画 ===== */
+        .intro-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background-color: #6b7280;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out;
+        }
+
+        .intro-text {
+            font-size: 70vh;
+            font-weight: 300;
+            color: #fff;
+            font-family: 'Bahnschrift Light Condensed', 'Arial Narrow', sans-serif;
+            display: flex;
+            letter-spacing: -0.2em;
+            line-height: 1;
+            transform: scaleX(0.7) scaleY(1.25);
+        }
+
+        .intro-char {
+            display: inline-block;
+            opacity: 0;
+            animation: charReveal 3s ease-in-out forwards;
+        }
+
+        @keyframes charReveal {
+            0% { opacity: 0; transform: rotateY(-90deg) scale(0.5); filter: blur(20px); }
+            30% { opacity: 1; transform: rotateY(0deg) scale(1); filter: blur(0px); }
+            70% { opacity: 1; }
+            100% { opacity: 0; transform: rotateY(90deg) scale(1.5); filter: blur(30px); }
+        }
+
+        /* ===== 首页 ===== */
+        .home-page { padding-top: 80px; }
+
+        .hero {
+            min-height: 80vh;
+            padding: 4rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            width: 100%;
+        }
+
+        .hero-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hero-text {
+            flex: 0 0 320px;
+        }
+
+        .hero h1 {
+            font-size: 3.8rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+            color: #000;
+            white-space: pre-line;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: #000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .hero-visuals {
+            flex: 1;
+            position: relative;
+            height: 500px;
+        }
+
+        .hero-card {
+            position: absolute;
+            width: 240px;
+            height: 320px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 4rem;
+        }
+
+        .hero-card:hover { transform: scale(1.05); }
+
+        .hero-card-1 { top: 20px; left: 50%; margin-left: -220px; transform: rotate(-20deg); z-index: 1; }
+        .hero-card-2 { top: 60px; left: 50%; margin-left: -140px; transform: rotate(-5deg); z-index: 2; }
+        .hero-card-3 { top: 100px; left: 50%; margin-left: -60px; transform: rotate(10deg); z-index: 3; }
+        .hero-card-4 { top: 140px; left: 50%; margin-left: 20px; transform: rotate(25deg); z-index: 4; }
+
+        /* 理念部分 */
+        .concept {
+            padding: 8rem 0;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .concept-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .concept-content p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        /* 研究部分 */
+        .research {
+            padding: 8rem 0;
+            background-color: #f8f8f8;
+        }
+
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .research-card {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .research-card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        /* 服务功能 */
+        .features {
+            padding: 8rem 0;
+            background-color: #fff;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: #f8f8f8;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+        }
+
+        /* 流程部分 */
+        .process {
+            padding: 8rem 0;
+            background-color: #f8f8f8;
+        }
+
+        .process-steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .step {
+            text-align: center;
+            max-width: 200px;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #000;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        /* 联系部分 */
+        .contact {
+            padding: 8rem 0;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+        }
+
+        .contact .section-title {
+            color: #fff;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background: #fff;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        footer {
+            background: #222;
+            color: #fff;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        /* ===== 二级页面（体验） ===== */
+        .experience-page {
+            padding-top: 80px;
+            background: linear-gradient(135deg, #e0e0e0 0%, #f0f0f0 50%, #e8e8e8 100%);
+            min-height: 100vh;
+        }
+
+        .cards-section {
+            padding: 4rem 2rem;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            perspective: 1200px;
+        }
+
+        .category-card {
+            width: 180px;
+            height: 260px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+
+        .category-card .card-emoji {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+        }
+
+        .category-card .card-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+            color: #fff;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* ===== 三级页面（AI对话） ===== */
+        .ai-page {
+            padding-top: 80px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+        }
+
+        .ai-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .ai-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .ai-avatar {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .chat-container {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            min-height: 400px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-user {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .message-ai {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            line-height: 1.6;
+        }
+
+        .message-user .message-content {
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-ai .message-content {
+            background: #f5f5f5;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        .welcome-message {
+            background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
+            border-left: 4px solid #333;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .suggestion-tag {
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #666;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-tag:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        .choice-entry-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .choice-entry-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        /* ===== 四级页面（选择） ===== */
+        .choice-page {
+            padding-top: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .choice-container {
+            display: flex;
+            gap: 3rem;
+            padding: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .choice-card-level4 {
+            width: 350px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .choice-card-level4:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .choice-card-level4:nth-child(1) {
+            border-top: 5px solid #e74c3c;
+        }
+
+        .choice-card-level4:nth-child(2) {
+            border-top: 5px solid #27ae60;
+        }
+
+        .choice-emoji-large {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .choice-title-large {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .choice-card-level4:nth-child(1) .choice-title-large {
+            color: #e74c3c;
+        }
+
+        .choice-card-level4:nth-child(2) .choice-title-large {
+            color: #27ae60;
+        }
+
+        .choice-desc {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero-content { flex-direction: column; }
+            .hero-text { flex: none; text-align: center; margin-bottom: 2rem; }
+            .hero h1 { font-size: 2.5rem; }
+            .choice-container { flex-direction: column; }
+            .choice-card-level4 { width: 100%; max-width: 350px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 开场动画 -->
+    <div class="intro-screen" id="intro-screen">
+        <div class="intro-text">
+            <span class="intro-char" style="animation-delay: 0s">T</span>
+            <span class="intro-char" style="animation-delay: 0.2s">H</span>
+            <span class="intro-char" style="animation-delay: 0.4s">E</span>
+            <span class="intro-char" style="animation-delay: 0.6s">&nbsp;</span>
+            <span class="intro-char" style="animation-delay: 0.8s">D</span>
+            <span class="intro-char" style="animation-delay: 1s">O</span>
+            <span class="intro-char" style="animation-delay: 1.2s">O</span>
+            <span class="intro-char" style="animation-delay: 1.4s">R</span>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <header class="navbar" id="main-navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo" onclick="showPage('home')">
+                <div class="logo-door"></div>
+                <span>THE DOOR</span>
+            </div>
+            <ul class="navbar-links" id="nav-links">
+                <li><span class="navbar-link" onclick="showPage('home')">首页</span></li>
+                <li><span class="navbar-link" onclick="scrollToSection('concept')">理念</span></li>
+                <li><span class="navbar-link" onclick="scrollToSection('research')">研究</span></li>
+                <li><span class="navbar-link" onclick="scrollToSection('features')">功能</span></li>
+                <li><span class="navbar-link" onclick="showPage('experience')">体验</span></li>
+            </ul>
+            <span class="back-link" id="back-link" style="display: none;" onclick="goBack()">返回</span>
+        </div>
+    </header>
+
+    <!-- ===== 首页 ===== -->
+    <div class="page home-page active" id="page-home">
+        <section class="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>其实你现在
+挺好</h1>
+                        <button class="btn" onclick="showPage('experience')">开始体验</button>
+                    </div>
+                    <div class="hero-visuals">
+                        <div class="hero-card hero-card-1" onclick="showCardMessage(1)">🌱</div>
+                        <div class="hero-card hero-card-2" onclick="showCardMessage(2)">💼</div>
+                        <div class="hero-card hero-card-3" onclick="showCardMessage(3)">❤️</div>
+                        <div class="hero-card hero-card-4" onclick="showCardMessage(4)">👨‍👩‍👧‍👦</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="concept" id="concept">
+            <div class="container">
+                <h2 class="section-title">我们的理念</h2>
+                <div class="concept-content">
+                    <p>每个人的人生都充满了选择，</p>
+                    <p>而有些选择让我们后悔不已。</p>
+                    <p>但正是这些后悔，</p>
+                    <p>塑造了今天的我们。</p>
+                    <p>我们不需要否定过去，</p>
+                    <p>而是要学会与之和解。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="research" id="research">
+            <div class="container">
+                <h2 class="section-title">研究发现</h2>
+                <div class="research-grid">
+                    <div class="research-card">
+                        <h3>非适应性选择转换</h3>
+                        <p>研究表明，即使最初做出的是最佳选择，经历后悔情绪后，人们往往会倾向于转换到其他选择，即使这些选择并非最优。</p>
+                    </div>
+                    <div class="research-card">
+                        <h3>美化未选之路</h3>
+                        <p>心理学研究解释了为何人们会美化未选择的道路。当我们反思过去的决定时，大脑会倾向于忽略未选道路的潜在缺点。</p>
+                    </div>
+                    <div class="research-card">
+                        <h3>体验改变认知</h3>
+                        <p>实证研究发现，当人们能够"体验"未选择的道路时，他们对该选择的认知会更加客观。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="container">
+                <h2 class="section-title">服务功能</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>人生轨迹模拟</h3>
+                        <p>基于您的个人情况和选择，AI将模拟不同决策路径下的人生轨迹。</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>后悔情绪分析</h3>
+                        <p>通过分析您的决策过程和情绪反应，AI将帮助您识别可能导致后悔的思维模式。</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>决策优化建议</h3>
+                        <p>基于心理学研究和您的个人情况，AI将为您提供决策优化建议。</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>认知偏差纠正</h3>
+                        <p>AI将帮助您识别和纠正可能影响决策的认知偏差。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="process" id="process">
+            <div class="container">
+                <h2 class="section-title">使用流程</h2>
+                <div class="process-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>选择领域</h3>
+                        <p>选择您想要探索的人生领域</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>AI对话</h3>
+                        <p>与专业AI助手深入交流</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>获得洞察</h3>
+                        <p>获得个性化的建议和洞察</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>做出选择</h3>
+                        <p>决定如何面对您的后悔</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact" id="contact">
+            <div class="container">
+                <h2 class="section-title">联系我们</h2>
+                <p>如果您对我们的服务有任何疑问或建议，欢迎随时联系我们。</p>
+                <a href="#" class="contact-btn">了解更多</a>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <p>&copy; 2024 THE DOOR. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ===== 二级页面：体验 ===== -->
+    <div class="page" id="page-experience">
+        <div class="experience-page">
+            <div class="cards-section">
+                <div class="container">
+                    <h2 class="section-title">选择您想探索的领域</h2>
+                    <div class="cards-container">
+                        <div class="category-card" onclick="showAIPage('personal')">
+                            <span class="card-emoji">🌱</span>
+                            <span class="card-title">个人成长</span>
+                        </div>
+                        <div class="category-card" onclick="showAIPage('career')">
+                            <span class="card-emoji">💼</span>
+                            <span class="card-title">职业发展</span>
+                        </div>
+                        <div class="category-card" onclick="showAIPage('health')">
+                            <span class="card-emoji">❤️</span>
+                            <span class="card-title">健康管理</span>
+                        </div>
+                        <div class="category-card" onclick="showAIPage('family')">
+                            <span class="card-emoji">👨‍👩‍👧‍👦</span>
+                            <span class="card-title">家庭关系</span>
+                        </div>
+                        <div class="category-card" onclick="showAIPage('social')">
+                            <span class="card-emoji">🤝</span>
+                            <span class="card-title">社交人际</span>
+                        </div>
+                        <div class="category-card" onclick="showAIPage('finance')">
+                            <span class="card-emoji">💰</span>
+                            <span class="card-title">财务规划</span>
+                        </div>
+                        <div class="category-card" onclick="showAIPage('leisure')">
+                            <span class="card-emoji">🎨</span>
+                            <span class="card-title">休闲娱乐</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 三级页面：AI对话 ===== -->
+    <div class="page" id="page-ai">
+        <div class="ai-page">
+            <div class="ai-container">
+                <div class="ai-header">
+                    <div class="ai-avatar" id="ai-avatar">🌱</div>
+                    <h1 class="section-title" id="ai-title">成长导师 AI</h1>
+                    <p id="ai-subtitle">专注于个人成长与自我提升，陪你探索更好的自己</p>
+                </div>
+                <div class="chat-container" id="chat-container">
+                    <div class="welcome-message" id="welcome-message">
+                        <h3>你好，我是你的成长导师</h3>
+                        <p>每个人都会在成长路上遇到迷茫和遗憾。那些错过的机会、错误的选择、未曾说出口的话...这些后悔是否时常困扰着你？我在这里倾听，陪你一起从过去的经历中学习和成长。</p>
+                    </div>
+                </div>
+                <div class="input-area">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="分享你的故事...">
+                    <button class="btn" onclick="sendMessage()">发送</button>
+                </div>
+                <div class="suggestions" id="suggestions">
+                    <span class="suggestion-tag" onclick="setInput('后悔当初没有坚持梦想')">后悔当初没有坚持梦想</span>
+                    <span class="suggestion-tag" onclick="setInput('觉得自己浪费了很多时间')">觉得自己浪费了很多时间</span>
+                    <span class="suggestion-tag" onclick="setInput('错过了重要的机会')">错过了重要的机会</span>
+                    <span class="suggestion-tag" onclick="setInput('想改变但不知从何开始')">想改变但不知从何开始</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 四级页面：选择 ===== -->
+    <div class="page" id="page-choice">
+        <div class="choice-page">
+            <div class="choice-container">
+                <div class="choice-card-level4" onclick="handleChoice('regret')">
+                    <div class="choice-emoji-large">😔</div>
+                    <h2 class="choice-title-large">持续后悔中</h2>
+                    <p class="choice-desc">
+                        内心的遗憾依然挥之不去，<br>
+                        那些错过的机会、错误的选择，<br>
+                        仍在深夜困扰着你。
+                    </p>
+                </div>
+                <div class="choice-card-level4" onclick="handleChoice('accept')">
+                    <div class="choice-emoji-large">😊</div>
+                    <h2 class="choice-title-large">不再后悔了</h2>
+                    <p class="choice-desc">
+                        经过对话与思考，<br>
+                        你开始接纳过去的自己，<br>
+                        准备迎接新的可能。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // AI配置
+        const aiConfigs = {
+            personal: {
+                avatar: '🌱',
+                title: '成长导师 AI',
+                subtitle: '专注于个人成长与自我提升，陪你探索更好的自己',
+                welcome: '每个人都会在成长路上遇到迷茫和遗憾。那些错过的机会、错误的选择、未曾说出口的话...这些后悔是否时常困扰着你？我在这里倾听，陪你一起从过去的经历中学习和成长。',
+                suggestions: ['后悔当初没有坚持梦想', '觉得自己浪费了很多时间', '错过了重要的机会', '想改变但不知从何开始']
+            },
+            career: {
+                avatar: '💼',
+                title: '职业规划师 AI',
+                subtitle: '帮你分析职业选择的得失，找到最适合的发展路径',
+                welcome: '职业生涯中的每个选择都可能改变我们的人生轨迹。那些错过的晋升机会、错误的工作转换、未能坚持的职业理想...让我们一起回顾和分析，找到属于你的最佳职业路径。',
+                suggestions: ['后悔选择了现在的工作', '错过了升职的机会', '想转行但担心风险', '工作与生活的平衡困扰']
+            },
+            health: {
+                avatar: '❤️',
+                title: '健康顾问 AI',
+                subtitle: '关注身心健康，帮你建立更好的生活方式',
+                welcome: '健康是人生最宝贵的财富。那些熬夜的夜晚、忽视的身体信号、未能坚持的运动计划...让我们一起重新审视你的健康选择，找到身心平衡的最佳状态。',
+                suggestions: ['后悔没有早点关注健康', '想养成运动习惯但坚持不了', '工作压力大影响身体', '想改善作息但做不到']
+            },
+            family: {
+                avatar: '👨‍👩‍👧‍👦',
+                title: '家庭关系顾问 AI',
+                subtitle: '化解家庭矛盾，修复亲密关系',
+                welcome: '家庭是我们生命中最重要的港湾。那些与父母的误解、与伴侣的争执、对孩子的愧疚...让我们一起探索如何修复和加强这些珍贵的家庭纽带。',
+                suggestions: ['后悔没有多陪伴家人', '与父母沟通困难', '想修复破裂的关系', '对家庭感到愧疚']
+            },
+            social: {
+                avatar: '🤝',
+                title: '社交导师 AI',
+                subtitle: '提升人际交往能力，建立更有意义的连接',
+                welcome: '人际关系是人生的重要组成部分。那些错过的友谊、说错的话、未能维护的关系...让我们一起分析你的社交模式，帮助你建立更真诚、更有意义的人际连接。',
+                suggestions: ['后悔失去了好朋友', '社交焦虑困扰着我', '想扩大社交圈', '不擅长维持关系']
+            },
+            finance: {
+                avatar: '💰',
+                title: '财务规划师 AI',
+                subtitle: '理性分析财务决策，帮你实现财务自由',
+                welcome: '财务决策影响着我们生活的方方面面。那些冲动的消费、错过的投资机会、未能坚持的储蓄计划...让我们一起回顾你的财务历程，制定更明智的财务规划。',
+                suggestions: ['后悔冲动消费', '想学习理财但不知从何开始', '担心未来的财务状况', '想建立储蓄习惯']
+            },
+            leisure: {
+                avatar: '🎨',
+                title: '生活美学师 AI',
+                subtitle: '发现生活中的美好，创造更有意义的生活方式',
+                welcome: '生活不仅仅是工作和责任，还需要有美好的体验。那些错过的旅行、放弃的爱好、未能享受的时刻...让我们一起重新审视你的生活方式，发现更多生活的美好。',
+                suggestions: ['后悔没有培养兴趣爱好', '想旅行但总是推迟', '生活缺乏乐趣', '想找回生活的热情']
+            }
+        };
+
+        let currentAI = 'personal';
+        let chatHistory = [];
+        let pageHistory = ['home'];
+
+        // 开场动画
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const intro = document.getElementById('intro-screen');
+                intro.style.opacity = '0';
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                }, 1000);
+            }, 3500);
+        });
+
+        // 页面切换
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById('page-' + pageName).classList.add('active');
+            
+            // 更新导航
+            if (pageName === 'home') {
+                document.getElementById('nav-links').style.display = 'flex';
+                document.getElementById('back-link').style.display = 'none';
+            } else {
+                document.getElementById('nav-links').style.display = 'none';
+                document.getElementById('back-link').style.display = 'inline-block';
+            }
+            
+            window.scrollTo(0, 0);
+            pageHistory.push(pageName);
+        }
+
+        // 返回上一页
+        function goBack() {
+            if (pageHistory.length > 1) {
+                pageHistory.pop();
+                const prevPage = pageHistory[pageHistory.length - 1];
+                showPage(prevPage);
+            } else {
+                showPage('home');
+            }
+        }
+
+        // 滚动到section
+        function scrollToSection(sectionId) {
+            showPage('home');
+            setTimeout(() => {
+                const element = document.getElementById(sectionId);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100);
+        }
+
+        // 显示AI页面
+        function showAIPage(aiType) {
+            currentAI = aiType;
+            const config = aiConfigs[aiType];
+            
+            document.getElementById('ai-avatar').textContent = config.avatar;
+            document.getElementById('ai-title').textContent = config.title;
+            document.getElementById('ai-subtitle').textContent = config.subtitle;
+            
+            // 更新欢迎消息
+            document.getElementById('welcome-message').innerHTML = `
+                <h3>你好，我是你的${config.title.replace(' AI', '')}</h3>
+                <p>${config.welcome}</p>
+            `;
+            
+            // 更新建议标签
+            const suggestionsContainer = document.getElementById('suggestions');
+            suggestionsContainer.innerHTML = config.suggestions.map(s => 
+                `<span class="suggestion-tag" onclick="setInput('${s}')">${s}</span>`
+            ).join('');
+            
+            // 清空聊天记录
+            chatHistory = [];
+            const container = document.getElementById('chat-container');
+            container.innerHTML = `
+                <div class="welcome-message">
+                    <h3>你好，我是你的${config.title.replace(' AI', '')}</h3>
+                    <p>${config.welcome}</p>
+                </div>
+            `;
+            
+            showPage('ai');
+        }
+
+        // 发送消息
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            // 添加用户消息
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // 模拟AI回复
+            setTimeout(() => {
+                const responses = [
+                    '我理解你的感受。每个人都会有这样的时刻，重要的是我们如何从中学习和成长。',
+                    '感谢你愿意分享这些。这种反思本身就是一种勇气，让我们一起探索如何更好地前进。',
+                    '我能感受到你的情绪。过去的经历虽然无法改变，但我们可以改变对它们的看法和态度。',
+                    '这是很常见的困扰。许多人都有类似的经历，你并不孤单。让我们一起找到解决的方法。'
+                ];
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                addMessageWithChoice(response);
+            }, 1000);
+        }
+
+        // 添加消息
+        function addMessage(content, role) {
+            const container = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${role}`;
+            messageDiv.innerHTML = `<div class="message-content">${content}</div>`;
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // 添加带选择按钮的消息
+        function addMessageWithChoice(content) {
+            const container = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-ai';
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${content}
+                    <br><br>
+                    <button class="choice-entry-btn" onclick="showPage('choice')">✨ 做出你的选择</button>
+                </div>
+            `;
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // 设置输入
+        function setInput(text) {
+            document.getElementById('chat-input').value = text;
+        }
+
+        // 处理选择
+        function handleChoice(choice) {
+            const messages = {
+                'regret': '我理解你的感受。后悔是一种正常的情绪，它说明你对自己的人生有所期待。让我们继续聊聊，看看如何把这些遗憾转化为成长的动力。',
+                'accept': '很高兴听到你开始接纳过去的自己。记住，每一个选择都塑造了今天的你，而今天的你正在创造更好的明天。'
+            };
+            
+            alert(messages[choice]);
+            showPage('home');
+        }
+
+        // 卡片消息
+        function showCardMessage(cardNum) {
+            const messages = {
+                1: '人生就像一场旅行，重要的不是目的地，而是沿途的风景和看风景的心情。',
+                2: '每一个选择都是一次成长的机会，即使是错误的选择也能让我们学到宝贵的经验。',
+                3: '过去的已经过去，未来的还未到来，我们唯一能把握的就是当下。',
+                4: '原谅自己，接纳过去，才能更好地迎接未来。'
+            };
+            alert(messages[cardNum]);
+        }
+
+        // 回车发送
+        document.getElementById('chat-input')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
